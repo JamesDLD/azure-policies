@@ -1,7 +1,14 @@
 name: compliance-scan
+
 on:
-  schedule:    
-    - cron:  '0 8 * * *'  # runs every morning 8am
+  workflow_dispatch:
+    inputs:
+      remarks:
+        description: 'Reason for triggering the workflow run'
+        required: false
+        default: 'Launching a compliance Scan of all Azure Policies contained in this Repo'
+  # schedule:    
+  #   - cron:  '0 8 * * *'  # runs every morning 8am
 jobs:
   assess-policy-compliance:    
     runs-on: ubuntu-latest
