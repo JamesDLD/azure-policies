@@ -29,7 +29,7 @@
                     "displayName": "Profile name",
                     "description": "The diagnostic settings profile name"
                 },
-                "defaultValue": "setbypolicy_logAnalytics"
+                "defaultValue": "setbypolicy"
             },
             "logAnalytics": {
                 "type": "String",
