@@ -6,10 +6,6 @@ on:
         description: 'Reason for triggering the workflow run'
         required: false
         default: 'Updating Azure Policies'
-
-
-## Uncomment the following if you wish to automatically trigger workflow run with every commit
-
  push:
    paths:
      - 'policies/Deploy_Diagnostic_Settings_for_Windows_Virtual_Desktop_Application_Groups_to_Log_Analytics_workspace_Windows_Virtual_Desktop_Application_Groups_Diagnostic_Settings/**'
