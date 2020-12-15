@@ -3,8 +3,12 @@
     "type": "Microsoft.Authorization/policyDefinitions",
     "name": "Databricks Diagnostic Settings",
     "properties": {
+        "displayName": "Deploy Diagnostic Settings for Databricks to Log Analytics workspace",
         "policyType": "Custom",
         "mode": "Indexed",
+        "metadata": {
+            "category": "Log Monitor"
+        },
         "policyRule": {
             "if": {
                 "allOf": [
