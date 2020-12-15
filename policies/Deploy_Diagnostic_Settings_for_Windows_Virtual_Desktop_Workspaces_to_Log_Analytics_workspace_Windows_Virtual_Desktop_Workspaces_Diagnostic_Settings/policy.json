@@ -1,0 +1,156 @@
+{
+ "properties": {
+  "displayName": "Deploy Diagnostic Settings for Windows Virtual Desktop Workspaces to Log Analytics workspace",
+  "policyType": "Custom",
+  "mode": "Indexed",
+  "metadata": {
+   "category": "Log Monitor",
+   "createdBy": "8ecc8747-0ae7-4d2d-9500-2d74698ca280",
+   "createdOn": "2020-06-04T15:57:31.9133018Z",
+   "updatedBy": null,
+   "updatedOn": null
+  },
+  "parameters": {
+   "effect": {
+    "type": "String",
+    "metadata": {
+     "displayName": "Effect",
+     "description": "Enable or disable the execution of the policy"
+    },
+    "allowedValues": [
+     "DeployIfNotExists",
+     "Disabled"
+    ],
+    "defaultValue": "DeployIfNotExists"
+   },
+   "profileName": {
+    "type": "String",
+    "metadata": {
+     "displayName": "Profile name",
+     "description": "The diagnostic settings profile name"
+    },
+    "defaultValue": "setbypolicy_logAnalytics"
+   },
+   "logAnalytics": {
+    "type": "String",
+    "metadata": {
+     "displayName": "Log Analytics workspace",
+     "description": "Select Log Analytics workspace from dropdown list. If this workspace is outside of the scope of the assignment you must manually grant Log Analytics Contributor permissions (or similar) to the policy assignment s principal ID.",
+     "strongType": "omsWorkspace",
+     "assignPermissions": true
+    }
+   },
+   "logsEnabled": {
+    "type": "String",
+    "metadata": {
+     "displayName": "Enable logs",
+     "description": "Whether to enable logs stream to the Log Analytics workspace - True or False"
+    },
+    "allowedValues": [
+     "True",
+     "False"
+    ],
+    "defaultValue": "True"
+   }
+  },
+  "policyRule": {
+   "if": {
+    "field": "type",
+    "equals": "Microsoft.DesktopVirtualization/workspaces"
+   },
+   "then": {
+    "effect": "[parameters('effect')]",
+    "details": {
+     "type": "Microsoft.Insights/diagnosticSettings",
+     "name": "[parameters('profileName')]",
+     "existenceCondition": {
+      "allOf": [
+       {
+        "field": "Microsoft.Insights/diagnosticSettings/logs.enabled",
+        "equals": "[parameters('logsEnabled')]"
+       }
+      ]
+     },
+     "deployment": {
+      "properties": {
+       "mode": "incremental",
+       "template": {
+        "$schema": "http://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+        "contentVersion": "1.0.0.0",
+        "parameters": {
+         "resourceName": {
+          "type": "string"
+         },
+         "location": {
+          "type": "string"
+         },
+         "logAnalytics": {
+          "type": "string"
+         },
+         "logsEnabled": {
+          "type": "string"
+         },
+         "profileName": {
+          "type": "string"
+         }
+        },
+        "variables": {},
+        "resources": [
+         {
+          "type": "Microsoft.DesktopVirtualization/workspaces/providers/diagnosticSettings",
+          "apiVersion": "2017-05-01-preview",
+          "name": "[concat(parameters('resourceName'), '/', 'Microsoft.Insights/', parameters('profileName'))]",
+          "location": "[parameters('location')]",
+          "dependsOn": [],
+          "properties": {
+           "workspaceId": "[parameters('logAnalytics')]",
+           "logs": [
+            {
+             "category": "Checkpoint",
+             "enabled": "[parameters('logsEnabled')]"
+            },
+            {
+             "category": "Error",
+             "enabled": "[parameters('logsEnabled')]"
+            },
+            {
+             "category": "Management",
+             "enabled": "[parameters('logsEnabled')]"
+            },
+            {
+             "category": "Feed",
+             "enabled": "[parameters('logsEnabled')]"
+            }
+           ]
+          }
+         }
+        ],
+        "outputs": {}
+       },
+       "parameters": {
+        "location": {
+         "value": "[field('location')]"
+        },
+        "resourceName": {
+         "value": "[field('name')]"
+        },
+        "logAnalytics": {
+         "value": "[parameters('logAnalytics')]"
+        },
+        "logsEnabled": {
+         "value": "[parameters('logsEnabled')]"
+        },
+        "profileName": {
+         "value": "[parameters('profileName')]"
+        }
+       }
+      }
+     }
+    }
+   }
+  }
+ },
+ "id": "/subscriptions/6094e15e-3e04-47b5-9b3b-aa8ae3cf1e52/providers/Microsoft.Authorization/policyDefinitions/Windows Virtual Desktop Workspaces Diagnostic Settings",
+ "type": "Microsoft.Authorization/policyDefinitions",
+ "name": "Windows Virtual Desktop Workspaces Diagnostic Settings"
+}
