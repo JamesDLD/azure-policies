@@ -1,4 +1,7 @@
 {
+    "id": "/subscriptions/6094e15e-3e04-47b5-9b3b-aa8ae3cf1e52/providers/Microsoft.Authorization/policySetDefinitions/Windows Virtual Desktop Resources Diagnostic Settings",
+    "type": "Microsoft.Authorization/policySetDefinitions",
+    "name": "Windows Virtual Desktop Resources Diagnostic Settings",
     "properties": {
         "displayName": "Deploy Diagnostic Settings for Windows Virtual Desktop Resources to Log Analytics workspace",
         "policyType": "Custom",
@@ -106,10 +109,24 @@
                         "value": "[parameters('effect')]"
                     }
                 }
+            },
+            {
+                "policyDefinitionId": "/subscriptions/6094e15e-3e04-47b5-9b3b-aa8ae3cf1e52/providers/Microsoft.Authorization/policyDefinitions/Databricks Diagnostic Settings",
+                "parameters": {
+                    "profileName": {
+                        "value": "[parameters('profileName')]"
+                    },
+                    "logsEnabled": {
+                        "value": "[parameters('logsEnabled')]"
+                    },
+                    "logAnalytics": {
+                        "value": "[parameters('logAnalytics')]"
+                    },
+                    "effect": {
+                        "value": "[parameters('effect')]"
+                    }
+                }
             }
         ]
-    },
-    "id": "/subscriptions/6094e15e-3e04-47b5-9b3b-aa8ae3cf1e52/providers/Microsoft.Authorization/policySetDefinitions/Windows Virtual Desktop Resources Diagnostic Settings",
-    "type": "Microsoft.Authorization/policySetDefinitions",
-    "name": "Windows Virtual Desktop Resources Diagnostic Settings"
+    }
 }
