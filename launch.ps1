@@ -12,11 +12,11 @@ $parameters = (Get-Content -Path ".\policies\Deploy_Diagnostic_Settings_for_Data
 $policy = (Get-Content -Path ".\policies\Deploy_Diagnostic_Settings_for_Databricks_to_Log_Analytics_workspace\policy.json") | ConvertFrom-Json
 
 $azurePolicy = New-AzPolicyDefinition -Name $policy.name `
-    -DisplayName $policy.displayName `
-    -Policy ($policy | ConvertTo-Json -Depth 20) `
-    -Parameter ($parameters | ConvertTo-Json -Depth 20) `
-    -Metadata '{"category":"Log Monitor"}' `
-    -Mode Indexed
+  -DisplayName $policy.displayName `
+  -Policy ($policy | ConvertTo-Json -Depth 20) `
+  -Parameter ($parameters | ConvertTo-Json -Depth 20) `
+  -Metadata '{"category":"Log Monitor"}' `
+  -Mode Indexed
 
 
 #Method 2 : with GitHub Action
@@ -29,5 +29,4 @@ $azurePolicy = New-AzPolicyDefinition -Name $policy.name `
         paths: |
           policies/Deploy_Diagnostic_Settings_for_Databricks_to_Log_Analytics_workspace/**
 #>
-
   

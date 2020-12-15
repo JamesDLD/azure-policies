@@ -33,8 +33,5 @@ jobs:
       uses: azure/manage-azure-policy@v0
       with:
         paths: |
-          policies/Deploy_Diagnostic_Settings_for_Databricks_to_Log_Analytics_workspace/**
-          policies/Deploy_Diagnostic_Settings_for_Windows_Virtual_Desktop_Application_Groups_to_Log_Analytics_workspace_Windows_Virtual_Desktop_Application_Groups_Diagnostic_Settings/**
-          initiatives/Deploy_Diagnostic_Settings_for_Windows_Virtual_Desktop_Resources_to_Log_Analytics_workspace_Windows_Virtual_Desktop_Resources_Diagnostic_Settings/**
-          policies/Deploy_Diagnostic_Settings_for_Windows_Virtual_Desktop_Host_Pools_to_Log_Analytics_workspace_Windows_Virtual_Desktop_Host_Pools_Diagnostic_Settings/**
-          policies/Deploy_Diagnostic_Settings_for_Windows_Virtual_Desktop_Workspaces_to_Log_Analytics_workspace_Windows_Virtual_Desktop_Workspaces_Diagnostic_Settings/**
+          policies/**
+          initiatives/**

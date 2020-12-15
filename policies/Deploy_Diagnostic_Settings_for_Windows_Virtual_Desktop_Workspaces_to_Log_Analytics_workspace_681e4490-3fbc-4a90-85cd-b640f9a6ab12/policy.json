@@ -1,14 +1,13 @@
 {
+    "id": "/subscriptions/6094e15e-3e04-47b5-9b3b-aa8ae3cf1e52/providers/Microsoft.Authorization/policyDefinitions/681e4490-3fbc-4a90-85cd-b640f9a6ab12",
+    "type": "Microsoft.Authorization/policyDefinitions",
+    "name": "681e4490-3fbc-4a90-85cd-b640f9a6ab12",
     "properties": {
-        "displayName": "Deploy Diagnostic Settings for Windows Virtual Desktop Application Groups to Log Analytics workspace",
+        "displayName": "Deploy Diagnostic Settings for Windows Virtual Desktop Workspaces to Log Analytics workspace",
         "policyType": "Custom",
         "mode": "Indexed",
         "metadata": {
-            "category": "Log Monitor",
-            "createdBy": "8ecc8747-0ae7-4d2d-9500-2d74698ca280",
-            "createdOn": "2020-06-04T15:57:34.4103716Z",
-            "updatedBy": null,
-            "updatedOn": null
+            "category": "Log Monitor"
         },
         "parameters": {
             "effect": {
@@ -56,7 +55,7 @@
         "policyRule": {
             "if": {
                 "field": "type",
-                "equals": "Microsoft.DesktopVirtualization/applicationgroups"
+                "equals": "Microsoft.DesktopVirtualization/workspaces"
             },
             "then": {
                 "effect": "[parameters('effect')]",
@@ -97,7 +96,7 @@
                                 "variables": {},
                                 "resources": [
                                     {
-                                        "type": "Microsoft.DesktopVirtualization/applicationgroups/providers/diagnosticSettings",
+                                        "type": "Microsoft.DesktopVirtualization/workspaces/providers/diagnosticSettings",
                                         "apiVersion": "2017-05-01-preview",
                                         "name": "[concat(parameters('resourceName'), '/', 'Microsoft.Insights/', parameters('profileName'))]",
                                         "location": "[parameters('location')]",
@@ -115,6 +114,10 @@
                                                 },
                                                 {
                                                     "category": "Management",
+                                                    "enabled": "[parameters('logsEnabled')]"
+                                                },
+                                                {
+                                                    "category": "Feed",
                                                     "enabled": "[parameters('logsEnabled')]"
                                                 }
                                             ]
@@ -145,8 +148,5 @@
                 }
             }
         }
-    },
-    "id": "/subscriptions/6094e15e-3e04-47b5-9b3b-aa8ae3cf1e52/providers/Microsoft.Authorization/policyDefinitions/Windows Virtual Desktop Application Groups Diagnostic Settings",
-    "type": "Microsoft.Authorization/policyDefinitions",
-    "name": "Windows Virtual Desktop Application Groups Diagnostic Settings"
+    }
 }
