@@ -8,4 +8,5 @@ Share Azure Policies with the community.
 - [Azure Policy initiative definition structure](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/initiative-definition-structure?WT.mc_id=DOP-MVP-5003548)
 
 # Policies
-- [Diagnostic logging in Azure Databricks](https://docs.microsoft.com/en-us/azure/databricks/administration-guide/account-settings/azure-diagnostic-logs)
+## Guidelines for Monitoring
+- [Diagnostic logging in Azure Databricks](https://docs.microsoft.com/en-us/azure/databricks/administration-guide/account-settings/azure-diagnostic-logs?WT.mc_id=DOP-MVP-5003548)

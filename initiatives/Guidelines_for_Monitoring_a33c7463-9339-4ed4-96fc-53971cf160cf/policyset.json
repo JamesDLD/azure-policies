@@ -3,7 +3,7 @@
     "type": "Microsoft.Authorization/policySetDefinitions",
     "name": "a33c7463-9339-4ed4-96fc-53971cf160cf",
     "properties": {
-        "displayName": "Guidelines for Montiroring",
+        "displayName": "Guidelines for Monitoring",
         "policyType": "Custom",
         "metadata": {
             "category": "Log Monitor"
