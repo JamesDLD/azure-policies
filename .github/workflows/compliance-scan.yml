@@ -1,4 +1,4 @@
-name: compliance-scan
+name: compliance-scan-mvp
 
 on:
   workflow_dispatch:
@@ -16,7 +16,7 @@ jobs:
     - name: Login to Azure
       uses: azure/login@v1
       with:
-        creds: ${{secrets.AZURE_CREDENTIALS_ce96fa1c}}
+        creds: ${{secrets.AZURE_CREDENTIALS_mvp}}
         allow-no-subscriptions: true
 
     - name: Check for resource compliance
