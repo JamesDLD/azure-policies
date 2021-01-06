@@ -1,16 +1,16 @@
 name: manage-azure-policy-mvp
 on:
-#  push:
-#    paths:
-#      - 'policies/**'
-#      - 'initiatives/**'
+ push:
+   paths:
+     - 'policies/**'
+     - 'initiatives/**'
 
-  workflow_dispatch:
-    inputs:
-      remarks:
-        description: 'Reason for triggering the workflow run'
-        required: false
-        default: 'Updating Azure Policies'
+  # workflow_dispatch:
+  #   inputs:
+  #     remarks:
+  #       description: 'Reason for triggering the workflow run'
+  #       required: false
+  #       default: 'Updating Azure Policies'
 
 
 ## Uncomment the following if you wish to automatically trigger workflow run with every commit
