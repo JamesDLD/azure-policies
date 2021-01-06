@@ -1,11 +1,20 @@
-## Variable
+################################################################################
+#                                 Variable
+################################################################################
+Set-StrictMode -Version 2
+$ErrorActionPreference = "Stop"
 $AzureRmSubscriptionName = "mvp-sub1"
 
-## Connectivity
+################################################################################
+#                                 Connectivity
+################################################################################
 # Login first with Connect-AzAccount if not using Cloud Shell
 $AzureRmContext = Get-AzSubscription -SubscriptionName $AzureRmSubscriptionName | Set-AzContext -ErrorAction Stop
 Select-AzSubscription -Name $AzureRmSubscriptionName -Context $AzureRmContext -Force -ErrorAction Stop
 
+################################################################################
+#                                 Action
+################################################################################
 ## Create or Update Azure Policies Definition and Azure Policies Initiative Definition
 #Method 1 : with PowerShell
 foreach ($item in Get-Item .\policies\*\policy.parameters.json) {
@@ -50,23 +59,27 @@ foreach ($item in Get-Item .\initiatives\*\policy.parameters.json) {
 
     ## Create a role assignment from the role definition ids available in each policies initiatives
     $roleDefinitionIds = $initiativePolicy.Properties.PolicyDefinitions.policyDefinitionId | ForEach-Object { (Get-AzPolicyDefinition -Id $_).Properties.policyRule.then.details.roleDefinitionIds } | Select-Object -Unique
+    
+    # $initiativePolicy.Properties.PolicyDefinitions.policyDefinitionId | ForEach-Object { 
+    #   $AzPolicyDefinition = Get-AzPolicyDefinition -Id $_
+    #   Write-Host "$($AzPolicyDefinition.PolicyDefinitionId) = "
+    #   Write-host "$($AzPolicyDefinition.Properties.policyRule.then.details.roleDefinitionIds)"
+    # }
+
+    # Get-AzPolicyDefinition -Id "/subscriptions/6094e15e-3e04-47b5-9b3b-aa8ae3cf1e52/providers/Microsoft.Authorization/policyDefinitions/f456b330-5f05-4218-928a-c40f37989207"
+
     foreach ($roleDefinitionId in $roleDefinitionIds) {
       
-      New-AzRoleAssignment -Scope "$($assign.properties.scope)" -ObjectId $objectID -RoleDefinitionId "$($roleDefinitionId.Split("/")[-1])"
-
-      ## Debug because I have locally the error described here : https://stackoverflow.com/questions/63598486/azure-new-azroleassignment-input-string-was-not-in-a-correct-format-error-wit
-      Write-Host "New-AzRoleAssignment -Scope $($assign.properties.scope) -ObjectId $objectID -RoleDefinitionId $($roleDefinitionId.Split("/")[-1])"
+      $AzRoleAssignment = Get-AzRoleAssignment -Scope "$($assign.properties.scope)" -ObjectId $objectID -RoleDefinitionId "$($roleDefinitionId.Split("/")[-1])" -ErrorVariable notPresent -ErrorAction SilentlyContinue
+      if (!$AzRoleAssignment) {
+        New-AzRoleAssignment -Scope "$($assign.properties.scope)" -ObjectId $objectID -RoleDefinitionId "$($roleDefinitionId.Split("/")[-1])"
+        ## Debug because I have locally the error described here : https://stackoverflow.com/questions/63598486/azure-new-azroleassignment-input-string-was-not-in-a-correct-format-error-wit
+        Write-Host "New-AzRoleAssignment -Scope $($assign.properties.scope) -ObjectId $objectID -RoleDefinitionId $($roleDefinitionId.Split("/")[-1])"
+      }
     }
-
   }
-
 }
 
-# $Test = Get-AzPolicyAssignment -Scope "/subscriptions/6094e15e-3e04-47b5-9b3b-aa8ae3cf1e52/resourceGroups/dld-corp-mvp-dataplatform"
-# $Test = $Test[1]
-# $Test.name
-# $Test.Properties.DisplayName
-# $Test.Properties.Scope
 # #Method 2 : with GitHub Action
 # <#
 # 1. Use Azure GiHub Action with azure/manage-azure-policy@v0, see file ./.github/workflows/manage-azure-policy.yml
