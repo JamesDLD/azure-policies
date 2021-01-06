@@ -1,9 +1,9 @@
 name: manage-azure-policy-mvp
 on:
- push:
-   paths:
-     - 'policies/**'
-     - 'initiatives/**'
+#  push:
+#    paths:
+#      - 'policies/**'
+#      - 'initiatives/**'
 
   workflow_dispatch:
     inputs:
