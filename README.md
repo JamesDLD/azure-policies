@@ -32,7 +32,7 @@ Some detail are explained [here](https://github.com/Azure/actions-workflow-sampl
           policies/**
           initiatives/**
 
-*Important note* : if you want to proceed assignment of policies that use make sure to fill in the App Registration detail into the following brackets 
+*Important note* : if you want to proceed assignment of policies that use make sure to fill in the App Registration detail into the following brackets on the assign.<Policy>.json file
 ```
 "identity": {
   "principalId": "The Identity principalId",

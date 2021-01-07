@@ -17,7 +17,7 @@ Select-AzSubscription -Name $AzureRmSubscriptionName -Context $AzureRmContext -F
 #                                 Action
 ################################################################################
 ## Create or Update Azure Policies Definition and Azure Policies Initiative Definition
-#Method 1 : with PowerShell
+
 foreach ($item in Get-Item .\policies\*\policy.parameters.json) {
   $policy = (Get-Content -Path $($item.FullName -replace "policy.parameters.json", "policy.json")) | ConvertFrom-Json
   $parameters = (Get-Content -Path $item.FullName) | ConvertFrom-Json
@@ -87,28 +87,7 @@ foreach ($item in Get-Item .\initiatives\*\policy.parameters.json) {
     else {
       $complianceJobs += Start-AzPolicyComplianceScan -AsJob
     }
+    #Memo to get the job info -->  Get-Job -Id $complianceJobs[0].Id 
     
   }
 }
-
-# Method 2 : with GitHub Action
-<#
-1. Set up Secrets in GitHub Action workflows
-Some detail are explained [here](https://github.com/Azure/actions-workflow-samples/blob/master/assets/create-secrets-for-GitHub-workflows.md), in addition you can assign the privilege [Resource Policy Contributor](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles?WT.mc_id=DP-MVP-5003548#resource-policy-contributor) to the service principal you have just created for GitHub Action.
-
-2. Use Azure GiHub Action with azure/manage-azure-policy@v0, see file ./.github/workflows/manage-azure-policy.yml
- - Sample to create or update all policies : 
-    - name: Create or Update Azure Policies
-      uses: azure/manage-azure-policy@v0
-      with:
-        paths: |
-          policies/**
-          initiatives/**
-
-*Important note* : if you want to proceed assignment of policies that use make sure to fill in the App Registration detail into the following brackets 
-"identity": {
-  "principalId": "The Identity principalId",
-  "tenantId": "Your Tenant Id",
-  "type": "SystemAssigned"
-}
-#>
