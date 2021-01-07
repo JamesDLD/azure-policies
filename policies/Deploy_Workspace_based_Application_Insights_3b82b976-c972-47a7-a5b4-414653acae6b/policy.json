@@ -17,9 +17,9 @@
                     "description": "Enable or disable the execution of the policy"
                 },
                 "allowedValues": [
-                    "Audit"
+                    "DeployIfNotExists"
                 ],
-                "defaultValue": "Audit"
+                "defaultValue": "DeployIfNotExists"
             }
         },
         "policyRule": {
@@ -38,7 +38,95 @@
                 ]
             },
             "then": {
-                "effect": "[parameters('effect')]"
+                "effect": "[parameters('effect')]",
+                "details": {
+                    "type": "Microsoft.Insights/components",
+                    "existenceCondition": {
+                        "allOf": [
+                            {
+                                "not": {
+                                    "field": "Microsoft.Insights/components/IngestionMode",
+                                    "equals": "LogAnalytics"
+                                }
+                            }
+                        ]
+                    },
+                    "roleDefinitionIds": [
+                        "/providers/microsoft.authorization/roleDefinitions/749f88d5-cbae-40b8-bcfc-e573ddc772fa",
+                        "/providers/microsoft.authorization/roleDefinitions/ae349356-3a1b-4a5e-921d-050484c6347e"
+                    ],
+                    "deployment": {
+                        "properties": {
+                            "mode": "incremental",
+                            "template": {
+                                "$schema": "http://schema.management.azure.com/schemas/2014-04-01-preview/deploymentTemplate.json#",
+                                "contentVersion": "1.0.0.0",
+                                "parameters": {
+                                    "type": {
+                                        "type": "string"
+                                    },
+                                    "Flow_Type": {
+                                        "type": "string"
+                                    },
+                                    "location": {
+                                        "type": "string"
+                                    },
+                                    "resourceName": {
+                                        "type": "string"
+                                    },
+                                    "tags": {
+                                        "type": "object"
+                                    },
+                                    "requestSource": {
+                                        "type": "string"
+                                    },
+                                    "logAnalytics": {
+                                        "type": "string"
+                                    }
+                                },
+                                "resources": [
+                                    {
+                                        "name": "[parameters('resourceName')]",
+                                        "type": "microsoft.insights/components",
+                                        "location": "[parameters('location')]",
+                                        "tags": "[parameters('tags')]",
+                                        "apiVersion": "2020-02-02-preview",
+                                        "properties": {
+                                            "ApplicationId": "[parameters('resourceName')]",
+                                            "Application_Type": "[parameters('type')]",
+                                            "Flow_Type": "[parameters('Flow_Type')]",
+                                            "Request_Source": "[parameters('requestSource')]",
+                                            "WorkspaceResourceId": "[parameters('logAnalytics')]"
+                                        }
+                                    }
+                                ]
+                            }
+                        },
+                        "parameters": {
+                            "type": {
+                                "value": "[field('type')]"
+                            },
+                            "Flow_Type": {
+                                "value": "[field('Flow_Type')]"
+                            },
+                            "location": {
+                                "value": "[field('location')]"
+                            },
+                            "resourceName": {
+                                "value": "[field('name')]"
+                            },
+                            "tags": {
+                                "value": "[field('tags')]"
+                            },
+                            "requestSource": {
+                                "value": "Custom"
+                            },
+                            "logAnalytics": {
+                                "value": "[parameters('logAnalytics')]"
+                            }
+                        }
+                    }
+                }
             }
         }
     }

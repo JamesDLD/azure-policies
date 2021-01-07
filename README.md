@@ -1,3 +1,5 @@
+![manage-azure-policy-mvp](https://github.com/JamesDLD/azure-policies/workflows/manage-azure-policy-mvp/badge.svg)
+
 # Content
 Share Azure Policies with the community.
 

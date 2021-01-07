@@ -6,8 +6,8 @@
             "description": "Enable or disable the execution of the policy"
         },
         "allowedValues": [
-            "Audit"
+            "DeployIfNotExists"
         ],
-        "defaultValue": "Audit"
+        "defaultValue": "DeployIfNotExists"
     }
 }
