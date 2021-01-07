@@ -14,10 +14,12 @@
                 "type": "String",
                 "metadata": {
                     "displayName": "Effect",
-                    "description": "Enable or disable the execution of the policy"
+                    "description": "Enable, disable or audit the execution of the policy"
                 },
                 "allowedValues": [
-                    "DeployIfNotExists"
+                    "DeployIfNotExists",
+                    "Disabled",
+                    "auditIfNotExists"
                 ],
                 "defaultValue": "DeployIfNotExists"
             }
@@ -28,12 +30,6 @@
                     {
                         "field": "type",
                         "equals": "Microsoft.Insights/components"
-                    },
-                    {
-                        "not": {
-                            "field": "Microsoft.Insights/components/IngestionMode",
-                            "equals": "LogAnalytics"
-                        }
                     }
                 ]
             },
@@ -44,10 +40,8 @@
                     "existenceCondition": {
                         "allOf": [
                             {
-                                "not": {
-                                    "field": "Microsoft.Insights/components/IngestionMode",
-                                    "equals": "LogAnalytics"
-                                }
+                                "field": "Microsoft.Insights/components/IngestionMode",
+                                "equals": "LogAnalytics"
                             }
                         ]
                     },

@@ -87,7 +87,11 @@ foreach ($item in Get-Item .\initiatives\*\policy.parameters.json) {
     else {
       $complianceJobs += Start-AzPolicyComplianceScan -AsJob
     }
-    #Memo to get the job info -->  Get-Job -Id $complianceJobs[0].Id 
+    <#
+    Memo to get the job info --> 
+    Get-Job -Id $complianceJobs[0].Id 
+    $complianceJobs[0].PSBeginTime
+    #>
     
   }
 }
