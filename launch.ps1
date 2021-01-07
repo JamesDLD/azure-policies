@@ -4,6 +4,7 @@
 Set-StrictMode -Version 2
 $ErrorActionPreference = "Stop"
 $AzureRmSubscriptionName = "mvp-sub1"
+$complianceJobs = @()
 
 ################################################################################
 #                                 Connectivity
@@ -58,15 +59,16 @@ foreach ($item in Get-Item .\initiatives\*\policy.parameters.json) {
     $objectID = [GUID]($PolicyAssignment.Identity.principalId) #[GUID]($assign.identity.principalId) #
 
     ## Create a role assignment from the role definition ids available in each policies initiatives
-    $roleDefinitionIds = $initiativePolicy.Properties.PolicyDefinitions.policyDefinitionId | ForEach-Object { (Get-AzPolicyDefinition -Id $_).Properties.policyRule.then.details.roleDefinitionIds } | Select-Object -Unique
-    
-    # $initiativePolicy.Properties.PolicyDefinitions.policyDefinitionId | ForEach-Object { 
-    #   $AzPolicyDefinition = Get-AzPolicyDefinition -Id $_
-    #   Write-Host "$($AzPolicyDefinition.PolicyDefinitionId) = "
-    #   Write-host "$($AzPolicyDefinition.Properties.policyRule.then.details.roleDefinitionIds)"
-    # }
-
-    # Get-AzPolicyDefinition -Id "/subscriptions/6094e15e-3e04-47b5-9b3b-aa8ae3cf1e52/providers/Microsoft.Authorization/policyDefinitions/f456b330-5f05-4218-928a-c40f37989207"
+    $roleDefinitionIds = @()
+    $initiativePolicy.Properties.PolicyDefinitions.policyDefinitionId | ForEach-Object { 
+      $AzPolicyDefinition = Get-AzPolicyDefinition -Id $_
+      $details = $AzPolicyDefinition.Properties.PolicyRule.then
+      if ($AzPolicyDefinition.Properties.PolicyRule.then | Get-Member | Where-Object { $_.Name -like "details" }) {
+        $details | Get-Member | Where-Object { $_.Name -like "roleDefinitionIds" }
+        $roleDefinitionIds += $AzPolicyDefinition.Properties.PolicyRule.then.details.roleDefinitionIds 
+      }
+    }
+    $roleDefinitionIds = $roleDefinitionIds | Select-Object -Unique
 
     foreach ($roleDefinitionId in $roleDefinitionIds) {
       
@@ -77,43 +79,36 @@ foreach ($item in Get-Item .\initiatives\*\policy.parameters.json) {
         Write-Host "New-AzRoleAssignment -Scope $($assign.properties.scope) -ObjectId $objectID -RoleDefinitionId $($roleDefinitionId.Split("/")[-1])"
       }
     }
+
+    ## Start a compliance scan
+    if ($assign.properties.scope -like "*resourceGroups*") {
+      $complianceJobs += Start-AzPolicyComplianceScan -ResourceGroupName $($assign.properties.scope).Split("/")[-1] -AsJob
+    }
+    else {
+      $complianceJobs += Start-AzPolicyComplianceScan -AsJob
+    }
+    
   }
 }
 
-# #Method 2 : with GitHub Action
-# <#
-# 1. Use Azure GiHub Action with azure/manage-azure-policy@v0, see file ./.github/workflows/manage-azure-policy.yml
-#  - Sample to create or update all policies : 
-#     - name: Create or Update Azure Policies
-#       uses: azure/manage-azure-policy@v0
-#       with:
-#         paths: |
-#           policies/**
-#           initiatives/**
-# #>
-  
-# # Policy Assignment
-# # # Variable
-# # $scope = Get-AzResourceGroup -Name "dld-corp-mvp-dataplatform" #Replace it with your target scope
-# # $logAnalytics = Get-AzOperationalInsightsWorkspace -Name "mvp-hub-logaw1" -ResourceGroupName "infr-hub-prd-rg1" #Replace it with your target Log Analytics Workspace
-# # $initiativePolicy = Get-AzPolicySetDefinition -Name 'Windows Virtual Desktop Resources Diagnostic Settings' 
-# # $params = @{'logAnalytics' = ($logAnalytics.ResourceId) }
+# Method 2 : with GitHub Action
+<#
+1. Set up Secrets in GitHub Action workflows
+Some detail are explained [here](https://github.com/Azure/actions-workflow-samples/blob/master/assets/create-secrets-for-GitHub-workflows.md), in addition you can assign the privilege [Resource Policy Contributor](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles?WT.mc_id=DP-MVP-5003548#resource-policy-contributor) to the service principal you have just created for GitHub Action.
 
-# ## Assign the Initiative Policy
-# New-AzPolicyAssignment -Name 'WVD to Log Analytics Demo' `
-#   -DisplayName 'WVD to Log Analytics Demo' `
-#   -PolicySetDefinition $initiativePolicy `
-#   -Scope $scope.ResourceId `
-#   -AssignIdentity `
-#   -Location 'westeurope' `
-#   -PolicyParameterObject $params
+2. Use Azure GiHub Action with azure/manage-azure-policy@v0, see file ./.github/workflows/manage-azure-policy.yml
+ - Sample to create or update all policies : 
+    - name: Create or Update Azure Policies
+      uses: azure/manage-azure-policy@v0
+      with:
+        paths: |
+          policies/**
+          initiatives/**
 
-# ## Get the newly created policy assignment object
-# $PolicyAssignment = Get-AzPolicyAssignment -Name 'WVD to Log Analytics Demo' -Scope $scope.ResourceId
-
-# ## Extract the ObjectID of the Policy Assignment Managed Identity
-# $objectID = [GUID]($PolicyAssignment.Identity.principalId)
-
-# ## Create a role assignment from the previous information
-# $roleDefinitionId = (Get-AzRoleDefinition -Name "Contributor").Id #For the Demo we will assing the "Contributor" privilege to our Policy Assignment Managed Identity
-# New-AzRoleAssignment -Scope $scope.ResourceId -ObjectId $objectID -RoleDefinitionId $roleDefinitionId
+*Important note* : if you want to proceed assignment of policies that use make sure to fill in the App Registration detail into the following brackets 
+"identity": {
+  "principalId": "The Identity principalId",
+  "tenantId": "Your Tenant Id",
+  "type": "SystemAssigned"
+}
+#>
