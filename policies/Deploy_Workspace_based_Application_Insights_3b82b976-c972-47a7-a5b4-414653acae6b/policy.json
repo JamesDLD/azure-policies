@@ -39,12 +39,6 @@
                     {
                         "field": "type",
                         "equals": "Microsoft.Insights/components"
-                    },
-                    {
-                        "not": {
-                            "field": "Microsoft.Insights/components/IngestionMode",
-                            "equals": "LogAnalytics"
-                        }
                     }
                 ]
             },
