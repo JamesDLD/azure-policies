@@ -4,6 +4,8 @@
 
 # Directory
 .terraform/
+test/
 
 # Secret files
 **/secret/*.json
+**/secret/*.ps1

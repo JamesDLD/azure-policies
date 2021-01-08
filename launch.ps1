@@ -89,7 +89,7 @@ foreach ($item in Get-Item .\initiatives\*\policy.parameters.json) {
     }
     <#
     Memo to get the job info --> 
-    Get-Job -Id $complianceJobs[0].Id 
+    $complianceJobs[0]
     $complianceJobs[0].PSBeginTime
     #>
     
