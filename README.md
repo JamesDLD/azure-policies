@@ -10,25 +10,39 @@ Share Azure Policies with the community.
 - [Azure Policy initiative definition structure](https://docs.microsoft.com/en-us/azure/governance/policy/concepts/initiative-definition-structure?WT.mc_id=DOP-MVP-5003548)
 
 # Policies
+## High Level View
+1. A list of policies and policies initiatives definitions are created in a management group called *core*
+2. Role assignment are done at the subscription level per policy initiative definition
+
+![hlv](./images/hlv.png)
+
 ## [MVP] Monitoring Guidelines
-- [Diagnostic logging in Azure Databricks](https://docs.microsoft.com/en-us/azure/databricks/administration-guide/account-settings/azure-diagnostic-logs?WT.mc_id=DOP-MVP-5003548)
-- [Workspace-based Application Insights](https://docs.microsoft.com/en-us/azure/azure-monitor/app/convert-classic-resource?WT.mc_id=DOP-MVP-5003548)
-- [Diagnostic Settings for Azure Windows Virtual Desktop](https://medium.com/faun/diagnostic-settings-for-azure-windows-virtual-desktop-resources-part-2-4bfb9ce8d1be)
+- [Deploy Diagnostic Settings for Azure Databricks](https://docs.microsoft.com/en-us/azure/databricks/administration-guide/account-settings/azure-diagnostic-logs?WT.mc_id=DOP-MVP-5003548)
+- [Deploy Workspace-based Application Insights](https://docs.microsoft.com/en-us/azure/azure-monitor/app/convert-classic-resource?WT.mc_id=DOP-MVP-5003548)
+- [Deploy Diagnostic Settings for Azure Windows Virtual Desktop](https://medium.com/faun/diagnostic-settings-for-azure-windows-virtual-desktop-resources-part-2-4bfb9ce8d1be)
 
 # How to
 
 ## Create or Update Azure Policies Definition and Azure Policies Initiative Definition
-### Method 1 : with PowerShell 
-Excecute the script [launch.ps1](launch.ps1)
-* Note : this script launches also a compliance scan on each scope where you have assigned your policy.
+### Method 1: with PowerShell 
+**Prerequisites**
 
-### Method 2 : with GitHub Action
+* Use an account that has the privilege [Resource Policy Contributor](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles?WT.mc_id=AZ-MVP-5003548#resource-policy-contributor) on the management group that will host your policies.
+* If you are processing role assignment use an account that has the [User Access Administrator](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles?WT.mc_id=AZ-MVP-5003548#user-access-administrator) privilege on the target scope of your role assignment.
+
+**Action**
+
+Execute the script [launch.ps1](launch.ps1).
+
+* Note: this script launches also a compliance scan on each scope where you have assigned your policy.
+
+### Method 2: with GitHub Action
 
 1. Set up Secrets in GitHub Action workflows
 Some detail are explained [here](https://github.com/Azure/actions-workflow-samples/blob/master/assets/create-secrets-for-GitHub-workflows.md), in addition you can assign the privilege [Resource Policy Contributor](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles?WT.mc_id=DP-MVP-5003548#resource-policy-contributor) to the service principal you have just created for GitHub Action.
 
 2. Use Azure GiHub Action with azure/manage-azure-policy@v0, see file ./.github/workflows/manage-azure-policy.yml
- - Sample to create or update all policies : 
+ - Sample to create or update all policies: 
     - name: Create or Update Azure Policies
       uses: azure/manage-azure-policy@v0
       with:
