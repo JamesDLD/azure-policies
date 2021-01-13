@@ -10,7 +10,7 @@
             }
         }
     },
-    "id": "/subscriptions/6094e15e-3e04-47b5-9b3b-aa8ae3cf1e52/providers/Microsoft.Authorization/policyAssignments/[MVP] Monitoring Guidelines <mvp>",
+    "id": "/subscriptions/6094e15e-3e04-47b5-9b3b-aa8ae3cf1e52/providers/Microsoft.Authorization/policyAssignments/Policy [MVP] Monitoring",
     "type": "Microsoft.Authorization/policyAssignments",
     "name": "Policy [MVP] Monitoring",
     "location": "westeurope"
