@@ -1,9 +1,9 @@
 {
-    "id": "/subscriptions/6094e15e-3e04-47b5-9b3b-aa8ae3cf1e52/providers/Microsoft.Authorization/policyDefinitions/9d88aa10-1e90-436e-a97f-e37397871ba7",
+    "id": "/providers/Microsoft.Management/managementGroups/core/providers/Microsoft.Authorization/policyDefinitions/9d88aa10-1e90-436e-a97f-e37397871ba7",
     "type": "Microsoft.Authorization/policyDefinitions",
     "name": "9d88aa10-1e90-436e-a97f-e37397871ba7",
     "properties": {
-        "displayName": "Deploy Diagnostic Settings for Databricks to Log Analytics workspace",
+        "displayName": "[MVP] Deploy Diagnostic Settings for Databricks to Log Analytics workspace",
         "policyType": "Custom",
         "mode": "Indexed",
         "metadata": {

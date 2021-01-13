@@ -1,9 +1,9 @@
 {
-    "id": "/subscriptions/6094e15e-3e04-47b5-9b3b-aa8ae3cf1e52/providers/Microsoft.Authorization/policyDefinitions/681e4490-3fbc-4a90-85cd-b640f9a6ab12",
+    "id": "/providers/Microsoft.Management/managementGroups/core/providers/Microsoft.Authorization/policyDefinitions/681e4490-3fbc-4a90-85cd-b640f9a6ab12",
     "type": "Microsoft.Authorization/policyDefinitions",
     "name": "681e4490-3fbc-4a90-85cd-b640f9a6ab12",
     "properties": {
-        "displayName": "Deploy Diagnostic Settings for Windows Virtual Desktop Workspaces to Log Analytics workspace",
+        "displayName": "[MVP] Deploy Diagnostic Settings for Windows Virtual Desktop Workspaces to Log Analytics workspace",
         "policyType": "Custom",
         "mode": "Indexed",
         "metadata": {

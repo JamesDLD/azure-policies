@@ -1,9 +1,9 @@
 {
-    "id": "/subscriptions/6094e15e-3e04-47b5-9b3b-aa8ae3cf1e52/providers/Microsoft.Authorization/policyDefinitions/bd9de3f4-7c08-4206-a391-f0175d0d167c",
+    "id": "/providers/Microsoft.Management/managementGroups/core/providers/Microsoft.Authorization/policyDefinitions/bd9de3f4-7c08-4206-a391-f0175d0d167c",
     "type": "Microsoft.Authorization/policyDefinitions",
     "name": "bd9de3f4-7c08-4206-a391-f0175d0d167c",
     "properties": {
-        "displayName": "Deploy Diagnostic Settings for Windows Virtual Desktop Host Pools to Log Analytics workspace",
+        "displayName": "[MVP] Deploy Diagnostic Settings for Windows Virtual Desktop Host Pools to Log Analytics workspace",
         "policyType": "Custom",
         "mode": "Indexed",
         "metadata": {

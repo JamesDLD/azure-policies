@@ -1,9 +1,9 @@
 {
-    "id": "/subscriptions/6094e15e-3e04-47b5-9b3b-aa8ae3cf1e52/providers/Microsoft.Authorization/policySetDefinitions/a33c7463-9339-4ed4-96fc-53971cf160cf",
+    "id": "/providers/Microsoft.Management/managementGroups/core/providers/Microsoft.Authorization/policySetDefinitions/a33c7463-9339-4ed4-96fc-53971cf160cf",
     "type": "Microsoft.Authorization/policySetDefinitions",
     "name": "a33c7463-9339-4ed4-96fc-53971cf160cf",
     "properties": {
-        "displayName": "Guidelines for Monitoring",
+        "displayName": "[MVP] Monitoring Guidelines",
         "policyType": "Custom",
         "metadata": {
             "category": "Log Monitor"
@@ -54,7 +54,7 @@
         },
         "policyDefinitions": [
             {
-                "policyDefinitionId": "/subscriptions/6094e15e-3e04-47b5-9b3b-aa8ae3cf1e52/providers/Microsoft.Authorization/policyDefinitions/9d88aa10-1e90-436e-a97f-e37397871ba7",
+                "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/core/providers/Microsoft.Authorization/policyDefinitions/9d88aa10-1e90-436e-a97f-e37397871ba7",
                 "parameters": {
                     "profileName": {
                         "value": "[parameters('profileName')]"
@@ -71,7 +71,7 @@
                 }
             },
             {
-                "policyDefinitionId": "/subscriptions/6094e15e-3e04-47b5-9b3b-aa8ae3cf1e52/providers/Microsoft.Authorization/policyDefinitions/f456b330-5f05-4218-928a-c40f37989207",
+                "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/core/providers/Microsoft.Authorization/policyDefinitions/f456b330-5f05-4218-928a-c40f37989207",
                 "parameters": {
                     "profileName": {
                         "value": "[parameters('profileName')]"
@@ -88,7 +88,7 @@
                 }
             },
             {
-                "policyDefinitionId": "/subscriptions/6094e15e-3e04-47b5-9b3b-aa8ae3cf1e52/providers/Microsoft.Authorization/policyDefinitions/bd9de3f4-7c08-4206-a391-f0175d0d167c",
+                "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/core/providers/Microsoft.Authorization/policyDefinitions/bd9de3f4-7c08-4206-a391-f0175d0d167c",
                 "parameters": {
                     "profileName": {
                         "value": "[parameters('profileName')]"
@@ -105,7 +105,7 @@
                 }
             },
             {
-                "policyDefinitionId": "/subscriptions/6094e15e-3e04-47b5-9b3b-aa8ae3cf1e52/providers/Microsoft.Authorization/policyDefinitions/681e4490-3fbc-4a90-85cd-b640f9a6ab12",
+                "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/core/providers/Microsoft.Authorization/policyDefinitions/681e4490-3fbc-4a90-85cd-b640f9a6ab12",
                 "parameters": {
                     "profileName": {
                         "value": "[parameters('profileName')]"
@@ -122,7 +122,7 @@
                 }
             },
             {
-                "policyDefinitionId": "/subscriptions/6094e15e-3e04-47b5-9b3b-aa8ae3cf1e52/providers/Microsoft.Authorization/policyDefinitions/3b82b976-c972-47a7-a5b4-414653acae6b",
+                "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/core/providers/Microsoft.Authorization/policyDefinitions/3b82b976-c972-47a7-a5b4-414653acae6b",
                 "parameters": {
                     "logAnalytics": {
                         "value": "[parameters('logAnalytics')]"

@@ -1,7 +1,7 @@
 {
     "properties": {
-        "displayName": "Guidelines for Monitoring <mvp-sub1>",
-        "policyDefinitionId": "/subscriptions/6094e15e-3e04-47b5-9b3b-aa8ae3cf1e52/providers/Microsoft.Authorization/policySetDefinitions/a33c7463-9339-4ed4-96fc-53971cf160cf",
+        "displayName": "[MVP] Monitoring Guidelines <mvp>",
+        "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/core/providers/Microsoft.Authorization/policySetDefinitions/a33c7463-9339-4ed4-96fc-53971cf160cf",
         "scope": "/subscriptions/6094e15e-3e04-47b5-9b3b-aa8ae3cf1e52",
         "notScopes": [],
         "parameters": {
@@ -10,8 +10,8 @@
             }
         }
     },
-    "id": "/subscriptions/6094e15e-3e04-47b5-9b3b-aa8ae3cf1e52/providers/Microsoft.Authorization/policyAssignments/Policy Guidelines for Monitoring <mvp-sub1>",
+    "id": "/subscriptions/6094e15e-3e04-47b5-9b3b-aa8ae3cf1e52/providers/Microsoft.Authorization/policyAssignments/[MVP] Monitoring Guidelines <mvp>",
     "type": "Microsoft.Authorization/policyAssignments",
-    "name": "Policy Guidelines for Monitoring <mvp-sub1>",
+    "name": "Policy [MVP] Monitoring",
     "location": "westeurope"
 }

@@ -1,0 +1,17 @@
+{
+    "properties": {
+        "displayName": "[MVP] Monitoring Guidelines <dev>",
+        "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/core/providers/Microsoft.Authorization/policySetDefinitions/a33c7463-9339-4ed4-96fc-53971cf160cf",
+        "scope": "/providers/Microsoft.Management/managementGroups/dev",
+        "notScopes": [],
+        "parameters": {
+            "logAnalytics": {
+                "value": "/subscriptions/6094e15e-3e04-47b5-9b3b-aa8ae3cf1e52/resourcegroups/infr-hub-prd-rg1/providers/microsoft.operationalinsights/workspaces/mvp-hub-logaw1"
+            }
+        }
+    },
+    "id": "/providers/Microsoft.Management/managementGroups/dev/providers/Microsoft.Authorization/policyAssignments/[MVP] Monitoring Guidelines <dev>",
+    "type": "Microsoft.Authorization/policyAssignments",
+    "name": "Policy [MVP] Monitoring",
+    "location": "westeurope"
+}

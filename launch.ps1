@@ -3,15 +3,12 @@
 ################################################################################
 Set-StrictMode -Version 2
 $ErrorActionPreference = "Stop"
-$AzureRmSubscriptionName = "mvp-sub1"
 $complianceJobs = @()
 
 ################################################################################
 #                                 Connectivity
 ################################################################################
 # Login first with Connect-AzAccount if not using Cloud Shell
-$AzureRmContext = Get-AzSubscription -SubscriptionName $AzureRmSubscriptionName | Set-AzContext -ErrorAction Stop
-Select-AzSubscription -Name $AzureRmSubscriptionName -Context $AzureRmContext -Force -ErrorAction Stop
 
 ################################################################################
 #                                 Action
@@ -28,6 +25,7 @@ foreach ($item in Get-Item .\policies\*\policy.parameters.json) {
     -Policy ($policy.properties | ConvertTo-Json -Depth 20) `
     -Parameter ($parameters | ConvertTo-Json -Depth 20) `
     -Metadata ($policy.properties.metadata | ConvertTo-Json) `
+    -ManagementGroupName $policy.id.Split("/")[4] `
     -Mode Indexed
 }
 
@@ -40,8 +38,8 @@ foreach ($item in Get-Item .\initiatives\*\policy.parameters.json) {
     -DisplayName $policy.properties.displayName `
     -PolicyDefinition ($policy.properties.policyDefinitions | ConvertTo-Json -Depth 5) `
     -Parameter ($parameters | ConvertTo-Json) `
+    -ManagementGroupName $policy.id.Split("/")[4] `
     -Metadata  ($policy.properties.metadata | ConvertTo-Json)
-
 
   foreach ($item_assign in Get-Item "$($item.Directory.FullName)\assign.*.json") {
     $assign = (Get-Content -Path $item_assign.FullName) | ConvertFrom-Json
