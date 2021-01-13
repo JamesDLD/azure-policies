@@ -3,9 +3,10 @@
 *.tfstate.lock.info
 
 # Directory
-.terraform/
 test/
 
 # Secret files
 **/secret/*.json
 **/secret/*.ps1
+.github/workflows/compliance-scan.yml
+**/assign.*.json
