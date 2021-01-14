@@ -75,6 +75,9 @@
                                     "resourceName": {
                                         "type": "string"
                                     },
+                                    "tags": {
+                                        "type": "object"
+                                    },
                                     "requestSource": {
                                         "type": "string"
                                     }
@@ -84,6 +87,7 @@
                                     {
                                         "name": "[parameters('resourceName')]",
                                         "type": "microsoft.insights/components",
+                                        "tags": "[parameters('tags')]",
                                         "location": "[parameters('location')]",
                                         "apiVersion": "2020-02-02-preview",
                                         "properties": {
@@ -101,6 +105,9 @@
                                 },
                                 "resourceName": {
                                     "value": "[field('Name')]"
+                                },
+                                "tags": {
+                                    "value": "[field('tags')]"
                                 },
                                 "requestSource": {
                                     "value": "Custom"
