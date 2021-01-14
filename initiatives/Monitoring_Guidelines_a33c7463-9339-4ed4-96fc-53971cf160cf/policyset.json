@@ -54,6 +54,7 @@
         },
         "policyDefinitions": [
             {
+                "policyDefinitionReferenceId": "_MVP_Deploy_Diagnostic_Settings_for_Databricks_to_Log_Analytics_workspace",
                 "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/core/providers/Microsoft.Authorization/policyDefinitions/9d88aa10-1e90-436e-a97f-e37397871ba7",
                 "parameters": {
                     "profileName": {
@@ -71,6 +72,7 @@
                 }
             },
             {
+                "policyDefinitionReferenceId": "_MVP_Deploy_Diagnostic_Settings_for_Windows_Virtual_Desktop_Application_Groups_to_Log_Analytics_workspace",
                 "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/core/providers/Microsoft.Authorization/policyDefinitions/f456b330-5f05-4218-928a-c40f37989207",
                 "parameters": {
                     "profileName": {
@@ -88,6 +90,7 @@
                 }
             },
             {
+                "policyDefinitionReferenceId": "_MVP_Deploy_Diagnostic_Settings_for_Windows_Virtual_Desktop_Host_Pools_to_Log_Analytics_workspace",
                 "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/core/providers/Microsoft.Authorization/policyDefinitions/bd9de3f4-7c08-4206-a391-f0175d0d167c",
                 "parameters": {
                     "profileName": {
@@ -105,6 +108,7 @@
                 }
             },
             {
+                "policyDefinitionReferenceId": "_MVP_Deploy_Diagnostic_Settings_for_Windows_Virtual_Desktop_Workspaces_to_Log_Analytics_workspace",
                 "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/core/providers/Microsoft.Authorization/policyDefinitions/681e4490-3fbc-4a90-85cd-b640f9a6ab12",
                 "parameters": {
                     "profileName": {
@@ -122,6 +126,7 @@
                 }
             },
             {
+                "policyDefinitionReferenceId": "_MVP_Deploy_Workspace_based_Application_Insights",
                 "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/core/providers/Microsoft.Authorization/policyDefinitions/3b82b976-c972-47a7-a5b4-414653acae6b",
                 "parameters": {
                     "logAnalytics": {
@@ -129,6 +134,15 @@
                     },
                     "effect": {
                         "value": "[parameters('effect')]"
+                    }
+                }
+            },
+            {
+                "policyDefinitionReferenceId": "Secure_transfer_to_storage_accounts_should_be_enabled",
+                "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/404c3081-a854-4457-ae30-26a93ef643f9",
+                "parameters": {
+                    "effect": {
+                        "value": "Audit"
                     }
                 }
             }
