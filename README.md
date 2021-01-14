@@ -2,6 +2,7 @@
 
 # Content
 Share Azure Policies with the community.
+Use of builtin Azure policies, and custom policies that are prefixed by the trigramme "MVP".
 
 # Reference
 - [Using GitHub for Azure Policy as Code](https://techcommunity.microsoft.com/t5/azure-governance-and-management/using-github-for-azure-policy-as-code/ba-p/1886464?WT.mc_id=DOP-MVP-5003548)
@@ -17,9 +18,18 @@ Share Azure Policies with the community.
 ![hlv](./images/hlv.png)
 
 ## [MVP] Monitoring Guidelines
-- [Deploy Diagnostic Settings for Azure Databricks](https://docs.microsoft.com/en-us/azure/databricks/administration-guide/account-settings/azure-diagnostic-logs?WT.mc_id=DOP-MVP-5003548)
-- [Deploy Workspace-based Application Insights](https://docs.microsoft.com/en-us/azure/azure-monitor/app/convert-classic-resource?WT.mc_id=DOP-MVP-5003548)
-- [Deploy Diagnostic Settings for Azure Windows Virtual Desktop](https://medium.com/faun/diagnostic-settings-for-azure-windows-virtual-desktop-resources-part-2-4bfb9ce8d1be)
+- [ [MVP] Deploy Diagnostic Settings for Azure Databricks](https://docs.microsoft.com/en-us/azure/databricks/administration-guide/account-settings/azure-diagnostic-logs?WT.mc_id=DOP-MVP-5003548)
+- [ [MVP] Deploy Workspace-based Application Insights](https://docs.microsoft.com/en-us/azure/azure-monitor/app/convert-classic-resource?WT.mc_id=DOP-MVP-5003548)
+- [ [MVP] Deploy Diagnostic Settings for Azure Windows Virtual Desktop](https://medium.com/faun/diagnostic-settings-for-azure-windows-virtual-desktop-resources-part-2-4bfb9ce8d1be)
+
+## [MVP] Security Guidelines
+- [Enable Security Center's auto provisioning of the Log Analytics agent on your subscriptions with custom workspace](https://docs.microsoft.com/en-us/azure/security-center/security-center-enable-data-collection?WT.mc_id=AZ-MVP-5003548)
+- [Deploy export to Log Analytics workspace for Azure Security Center data](https://docs.microsoft.com/en-us/azure/security-center/continuous-export?WT.mc_id=AZ-MVP-5003548)
+- [Secure transfer to storage accounts should be enabled](https://docs.microsoft.com/fr-fr/azure/storage/common/policy-reference?toc=%2Fazure%2Fstorage%2Fblobs%2Ftoc.json&WT.mc_id=AZ-MVP-5003548)
+- [Latest TLS version should be used in your Web App](https://azure.microsoft.com/fr-fr/updates/app-service-and-functions-hosted-apps-can-now-update-tls-versions/?WT.mc_id=DOP-MVP-5003548)
+- [Latest TLS version should be used in your Function App](https://azure.microsoft.com/fr-fr/updates/app-service-and-functions-hosted-apps-can-now-update-tls-versions/?WT.mc_id=DOP-MVP-5003548)
+- [ [MVP] Storage Accounts must have the minimal TLS version of 1.2](https://docs.microsoft.com/en-us/azure/storage/common/transport-layer-security-configure-minimum-version?toc=%2Fazure%2Fstorage%2Fblobs%2Ftoc.json&WT.mc_id=AZ-MVP-5003548)
+
 
 # How to
 

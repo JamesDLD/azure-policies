@@ -136,15 +136,6 @@
                         "value": "[parameters('effect')]"
                     }
                 }
-            },
-            {
-                "policyDefinitionReferenceId": "Secure_transfer_to_storage_accounts_should_be_enabled",
-                "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/404c3081-a854-4457-ae30-26a93ef643f9",
-                "parameters": {
-                    "effect": {
-                        "value": "Audit"
-                    }
-                }
             }
         ]
     }

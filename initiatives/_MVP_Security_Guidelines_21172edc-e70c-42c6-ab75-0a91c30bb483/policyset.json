@@ -1,0 +1,103 @@
+{
+    "id": "/providers/Microsoft.Management/managementGroups/core/providers/Microsoft.Authorization/policySetDefinitions/21172edc-e70c-42c6-ab75-0a91c30bb483",
+    "type": "Microsoft.Authorization/policySetDefinitions",
+    "name": "21172edc-e70c-42c6-ab75-0a91c30bb483",
+    "properties": {
+        "displayName": "[MVP] Security Guidelines",
+        "policyType": "Custom",
+        "metadata": {
+            "category": "Security Center"
+        },
+        "parameters": {
+            "resourceGroupName": {
+                "type": "String",
+                "metadata": {
+                    "displayName": "Resource group name",
+                    "description": "The resource group name where the export to Log Analytics workspace configuration is created. If you enter a name for a resource group that doesn't exist, it'll be created in the subscription. Note that each resource group can only have one export to Log Analytics workspace configured."
+                }
+            },
+            "resourceGroupLocation": {
+                "type": "String",
+                "metadata": {
+                    "displayName": "Resource group location",
+                    "description": "The location where the resource group and the export to Log Analytics workspace configuration are created.",
+                    "strongType": "location"
+                }
+            },
+            "workspaceResourceId": {
+                "type": "String",
+                "metadata": {
+                    "displayName": "Log Analytics workspace",
+                    "description": "The Log Analytics workspace of where the data should be exported to. If you do not already have a log analytics workspace, visit Log Analytics workspaces to create one (https://portal.azure.com/#blade/HubsExtension/BrowseResource/resourceType/Microsoft.OperationalInsights%2Fworkspaces).",
+                    "strongType": "Microsoft.OperationalInsights/workspaces",
+                    "assignPermissions": true
+                }
+            }
+        },
+        "policyDefinitions": [
+            {
+                "policyDefinitionReferenceId": "Deploy_export_to_Log_Analytics_workspace_for_Azure_Security_Center_data",
+                "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/ffb6f416-7bd2-4488-8828-56585fef2be9",
+                "parameters": {
+                    "resourceGroupName": {
+                        "value": "[parameters('resourceGroupName')]"
+                    },
+                    "resourceGroupLocation": {
+                        "value": "[parameters('resourceGroupLocation')]"
+                    },
+                    "workspaceResourceId": {
+                        "value": "[parameters('workspaceResourceId')]"
+                    }
+                }
+            },
+            {
+                "policyDefinitionReferenceId": "Enable_Security_Center_s_auto_provisioning_of_the_Log_Analytics_agent_on_your_subscriptions_with_custom_workspace_",
+                "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/8e7da0a5-0a0e-4bbc-bfc0-7773c018b616",
+                "parameters": {
+                    "effect": {
+                        "value": "DeployIfNotExists"
+                    },
+                    "logAnalytics": {
+                        "value": "[parameters('workspaceResourceId')]"
+                    }
+                }
+            },
+            {
+                "policyDefinitionReferenceId": "Secure_transfer_to_storage_accounts_should_be_enabled",
+                "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/404c3081-a854-4457-ae30-26a93ef643f9",
+                "parameters": {
+                    "effect": {
+                        "value": "Audit"
+                    }
+                }
+            },
+            {
+                "policyDefinitionReferenceId": "Latest_TLS_version_should_be_used_in_your_Web_App",
+                "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/f0e6e85b-9b9f-4a4b-b67b-f730d42f1b0b",
+                "parameters": {
+                    "effect": {
+                        "value": "AuditIfNotExists"
+                    }
+                }
+            },
+            {
+                "policyDefinitionReferenceId": "Latest_TLS_version_should_be_used_in_your_Function_App",
+                "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/f9d614c5-c173-4d56-95a7-b4437057d193",
+                "parameters": {
+                    "effect": {
+                        "value": "AuditIfNotExists"
+                    }
+                }
+            },
+            {
+                "policyDefinitionReferenceId": "_MVP_Storage_Accounts_must_have_the_minimal_TLS_version_of_1_2",
+                "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/core/providers/Microsoft.Authorization/policyDefinitions/171abd80-a9eb-494c-9804-eb1760f757c9",
+                "parameters": {
+                    "effect": {
+                        "value": "Audit"
+                    }
+                }
+            }
+        ]
+    }
+}

@@ -19,14 +19,17 @@ foreach ($item in Get-Item .\policies\*\policy.parameters.json) {
   $policy = (Get-Content -Path $($item.FullName -replace "policy.parameters.json", "policy.json")) | ConvertFrom-Json
   $parameters = (Get-Content -Path $item.FullName) | ConvertFrom-Json
   
-  Write-Output "Deploying the Azure Policy : $($policy.properties.displayName)"
-  New-AzPolicyDefinition -Name $policy.name `
-    -DisplayName $policy.properties.displayName `
-    -Policy ($policy.properties | ConvertTo-Json -Depth 20) `
-    -Parameter ($parameters | ConvertTo-Json -Depth 20) `
-    -Metadata ($policy.properties.metadata | ConvertTo-Json) `
-    -ManagementGroupName $policy.id.Split("/")[4] `
-    -Mode Indexed
+  if ($policy.properties.policyType -ne "BuiltIn") {
+    Write-Output "Deploying the Azure Policy : $($policy.properties.displayName)"
+    New-AzPolicyDefinition -Name $policy.name `
+      -DisplayName $policy.properties.displayName `
+      -Policy ($policy.properties | ConvertTo-Json -Depth 20) `
+      -Parameter ($parameters | ConvertTo-Json -Depth 20) `
+      -Metadata ($policy.properties.metadata | ConvertTo-Json) `
+      -ManagementGroupName $policy.id.Split("/")[4] `
+      -Mode Indexed
+  }
+
 }
 
 foreach ($item in Get-Item .\initiatives\*\policy.parameters.json) {
@@ -60,10 +63,11 @@ foreach ($item in Get-Item .\initiatives\*\policy.parameters.json) {
     $roleDefinitionIds = @()
     $initiativePolicy.Properties.PolicyDefinitions.policyDefinitionId | ForEach-Object { 
       $AzPolicyDefinition = Get-AzPolicyDefinition -Id $_
-      $details = $AzPolicyDefinition.Properties.PolicyRule.then
-      if ($AzPolicyDefinition.Properties.PolicyRule.then | Get-Member | Where-Object { $_.Name -like "details" }) {
-        $details | Get-Member | Where-Object { $_.Name -like "roleDefinitionIds" }
-        $roleDefinitionIds += $AzPolicyDefinition.Properties.PolicyRule.then.details.roleDefinitionIds 
+      $then = $AzPolicyDefinition.Properties.PolicyRule.then
+      if ($then | Get-Member | Where-Object { $_.Name -like "details" }) {
+        if ($then.details | Get-Member | Where-Object { $_.Name -like "roleDefinitionIds" } ) {
+          $roleDefinitionIds += $then.details.roleDefinitionIds 
+        }
       }
     }
     $roleDefinitionIds = $roleDefinitionIds | Select-Object -Unique
@@ -73,8 +77,6 @@ foreach ($item in Get-Item .\initiatives\*\policy.parameters.json) {
       $AzRoleAssignment = Get-AzRoleAssignment -Scope "$($assign.properties.scope)" -ObjectId $objectID -RoleDefinitionId "$($roleDefinitionId.Split("/")[-1])" -ErrorVariable notPresent -ErrorAction SilentlyContinue
       if (!$AzRoleAssignment) {
         New-AzRoleAssignment -Scope "$($assign.properties.scope)" -ObjectId $objectID -RoleDefinitionId "$($roleDefinitionId.Split("/")[-1])"
-        ## Debug because I have locally the error described here : https://stackoverflow.com/questions/63598486/azure-new-azroleassignment-input-string-was-not-in-a-correct-format-error-wit
-        Write-Host "New-AzRoleAssignment -Scope $($assign.properties.scope) -ObjectId $objectID -RoleDefinitionId $($roleDefinitionId.Split("/")[-1])"
       }
     }
 
@@ -87,8 +89,7 @@ foreach ($item in Get-Item .\initiatives\*\policy.parameters.json) {
     }
     <#
     Memo to get the job info --> 
-    $complianceJobs[0]
-    $complianceJobs[0].PSBeginTime
+    $complianceJobs | Select-Object Id, State, PSBeginTime
     #>
     
   }

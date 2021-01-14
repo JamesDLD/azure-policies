@@ -1,0 +1,45 @@
+{
+    "id": "/providers/Microsoft.Management/managementGroups/core/providers/Microsoft.Authorization/policyDefinitions/171abd80-a9eb-494c-9804-eb1760f757c9",
+    "type": "Microsoft.Authorization/policyDefinitions",
+    "name": "171abd80-a9eb-494c-9804-eb1760f757c9",
+    "properties": {
+        "displayName": "[MVP] Storage Accounts must have the minimal TLS version of 1.2",
+        "policyType": "Custom",
+        "mode": "Indexed",
+        "metadata": {
+            "category": "Storage"
+        },
+        "parameters": {
+            "effect": {
+                "type": "String",
+                "metadata": {
+                    "displayName": "Effect",
+                    "description": "Audit, deny or disable the execution of the policy"
+                },
+                "allowedValues": [
+                    "Audit",
+                    "Disabled",
+                    "Deny"
+                ],
+                "defaultValue": "Deny"
+            }
+        },
+        "policyRule": {
+            "if": {
+                "allOf": [
+                    {
+                        "field": "type",
+                        "equals": "Microsoft.Storage/storageAccounts"
+                    },
+                    {
+                        "field": "Microsoft.Storage/storageAccounts/minimumTlsVersion",
+                        "notEquals": "TLS1_2"
+                    }
+                ]
+            },
+            "then": {
+                "effect": "[parameters('effect')]"
+            }
+        }
+    }
+}
