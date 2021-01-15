@@ -14,14 +14,20 @@
                 "type": "String",
                 "metadata": {
                     "displayName": "Effect",
-                    "description": "Audit, deny or disable the execution of the policy"
+                    "description": "Enable, disable or audit the execution of the policy"
                 },
                 "allowedValues": [
-                    "Audit",
+                    "DeployIfNotExists",
                     "Disabled",
-                    "Deny"
+                    "AuditIfNotExists"
                 ],
-                "defaultValue": "Deny"
+                "defaultValue": "DeployIfNotExists"
+            },
+            "identityId": {
+                "type": "string",
+                "metadata": {
+                    "description": "Specifies the ID of the user-assigned managed identity used for deployment scripts in ARM templates."
+                }
             }
         },
         "policyRule": {
@@ -30,15 +36,129 @@
                     {
                         "field": "type",
                         "equals": "Microsoft.Storage/storageAccounts"
-                    },
-                    {
-                        "field": "Microsoft.Storage/storageAccounts/minimumTlsVersion",
-                        "notEquals": "TLS1_2"
                     }
                 ]
             },
             "then": {
-                "effect": "[parameters('effect')]"
+                "effect": "[parameters('effect')]",
+                "details": {
+                    "type": "Microsoft.Storage/storageAccounts",
+                    "name": "[field('name')]",
+                    "existenceCondition": {
+                        "allOf": [
+                            {
+                                "field": "Microsoft.Storage/storageAccounts/minimumTlsVersion",
+                                "equals": "TLS1_2"
+                            }
+                        ]
+                    },
+                    "roleDefinitionIds": [
+                        "/providers/microsoft.authorization/roleDefinitions/17d1049b-9a84-46fb-8f53-869881c3d3ab"
+                    ],
+                    "deployment": {
+                        "properties": {
+                            "mode": "incremental",
+                            "template": {
+                                "$schema": "http://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                                "contentVersion": "1.0.0.0",
+                                "parameters": {
+                                    "identityId": {
+                                        "type": "string",
+                                        "metadata": {
+                                            "description": "Specifies the ID of the user-assigned managed identity used for deployment scripts in ARM templates."
+                                        }
+                                    },
+                                    "utcValue": {
+                                        "type": "string",
+                                        "defaultValue": "[utcNow()]"
+                                    },
+                                    "resourceName": {
+                                        "type": "string"
+                                    }
+                                },
+                                "variables": {},
+                                "resources": [
+                                    {
+                                        "type": "Microsoft.Resources/deploymentScripts",
+                                        "apiVersion": "2020-10-01",
+                                        "name": "[concat('policy_storageAccounts_minimumTlsVersion_',parameters('resourceName'))]",
+                                        "location": "[resourceGroup().location]",
+                                        "identity": {
+                                            "type": "UserAssigned",
+                                            "userAssignedIdentities": {
+                                                "[parameters('identityId')]": {
+                                                }
+                                            }
+                                        },
+                                        "kind": "AzurePowerShell",
+                                        "properties": {
+                                            "forceUpdateTag": "[parameters('utcValue')]",
+                                            "azPowerShellVersion": "3.0",
+                                            "timeout": "P1D",
+                                            "arguments": "[format(' -saName {0} -saResourceGroupName {1} -minimumTlsVersion {2}', parameters('resourceName'), resourceGroup().name, 'TLS1_2')]", 
+                                            "scriptContent": "
+
+                            param(
+                                  [string] [Parameter(Mandatory = $true)] $saName,
+                                  [string] [Parameter(Mandatory = $true)] $saResourceGroupName,
+                                  [string] [Parameter(Mandatory = $true)] $minimumTlsVersion
+                              )
+                              
+                              $ErrorActionPreference = 'Stop'
+                              $DeploymentScriptOutputs = @{}
+
+                              ################################################################################
+                              #                                 Function
+                              ################################################################################
+                              Function Generate_Log_Action([string]$Action, [ScriptBlock]$Command) {
+                                  $Output = 'Info : '+$Action+'  ... '
+                                  Write-Host $Output
+                                  Try {
+                                      $Result = Invoke-Command -ScriptBlock $Command 
+                                  }
+                                  Catch {
+                                      $ErrorMessage = $_.Exception.Message
+                                      $Output = 'On action $Action : '+$ErrorMessage
+                                      Write-Error $Output
+                                      $Result = 'Error'
+                                  }
+                                  Return $Result
+                              }
+                              
+                              ################################################################################
+                              #                                 Action
+                              ################################################################################
+                              $Action = 'Read the MinimumTlsVersion property for saName' + $saName + 'with saResourceGroupName' + $saResourceGroupName
+                              $Command = { Get-AzStorageAccount -ResourceGroupName $saResourceGroupName -Name $saName -ErrorAction Stop }
+                              $sa = Generate_Log_Action -Action $Action -Command $Command 
+                              if ($sa -eq 'Error') { Exit 1 }
+                              
+                              if ($sa.MinimumTlsVersion -ne $minimumTlsVersion) {
+                                  $Action = 'Update the MinimumTlsVersion version for the storage account to' + $minimumTlsVersion + 'for saName' + $saName + 'with saResourceGroupName' + $saResourceGroupName
+                                  $Command = { Set-AzStorageAccount -ResourceGroupName $saResourceGroupName -AccountName $saName -MinimumTlsVersion $minimumTlsVersion -WhatIf -ErrorAction Stop }
+                                  $Result = Generate_Log_Action -Action $Action -Command $Command 
+                                  if ($Result -eq 'Error') { Exit 1 }
+                              }
+                            
+                                ",
+                                            "cleanupPreference": "Always",
+                                            "retentionInterval": "P1D"
+                                        }
+                                    }
+                                ],
+                                "outputs": {}
+                            },
+                            "parameters": {
+                                "identityId": {
+                                    "value": "[parameters('identityId')]"
+                                },
+                                "resourceName": {
+                                    "value": "[field('name')]"
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }

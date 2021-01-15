@@ -32,6 +32,12 @@
                     "strongType": "Microsoft.OperationalInsights/workspaces",
                     "assignPermissions": true
                 }
+            },
+            "identityId": {
+                "type": "string",
+                "metadata": {
+                    "description": "Specifies the ID of the user-assigned managed identity used for deployment scripts in ARM templates."
+                }
             }
         },
         "policyDefinitions": [
@@ -94,7 +100,10 @@
                 "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/core/providers/Microsoft.Authorization/policyDefinitions/171abd80-a9eb-494c-9804-eb1760f757c9",
                 "parameters": {
                     "effect": {
-                        "value": "Audit"
+                        "value": "DeployIfNotExists"
+                    },
+                    "identityId": {
+                        "value": "[parameters('identityId')]"
                     }
                 }
             }

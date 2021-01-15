@@ -4,6 +4,7 @@
 Set-StrictMode -Version 2
 $ErrorActionPreference = "Stop"
 $complianceJobs = @()
+$AzRoleDefinitions = @()
 
 ################################################################################
 #                                 Connectivity
@@ -13,8 +14,21 @@ $complianceJobs = @()
 ################################################################################
 #                                 Action
 ################################################################################
-## Create or Update Azure Policies Definition and Azure Policies Initiative Definition
+## Create or ensure that the needed custom roles exist
+foreach ($item in Get-Item .\roles\*.json) {
+  $roles = (Get-Content -Path $item.FullName) | ConvertFrom-Json
+  foreach ($role in $roles) {
+    $AzRoleDefinition = Get-AzRoleDefinition -Name $role.Name
+    if (!$AzRoleDefinition ) {
+      Write-Output "Creating the custom role $($role.Name)"
+      $AzRoleDefinitions += New-AzRoleDefinition -InputFile $item.FullName
+    }
+    else { $AzRoleDefinitions += $AzRoleDefinition }
+  }
+}
+$deploymentScriptMinimumPrivilege = $AzRoleDefinitions | Where-Object { $_.Name -like "Deployment script minimum privilege for deployment principal" }
 
+## Create or Update Azure Policies Definition and Azure Policies Initiative Definition
 foreach ($item in Get-Item .\policies\*\policy.parameters.json) {
   $policy = (Get-Content -Path $($item.FullName -replace "policy.parameters.json", "policy.json")) | ConvertFrom-Json
   $parameters = (Get-Content -Path $item.FullName) | ConvertFrom-Json
@@ -29,7 +43,6 @@ foreach ($item in Get-Item .\policies\*\policy.parameters.json) {
       -ManagementGroupName $policy.id.Split("/")[4] `
       -Mode Indexed
   }
-
 }
 
 foreach ($item in Get-Item .\initiatives\*\policy.parameters.json) {
@@ -60,6 +73,7 @@ foreach ($item in Get-Item .\initiatives\*\policy.parameters.json) {
     $objectID = [GUID]($PolicyAssignment.Identity.principalId) #[GUID]($assign.identity.principalId) #
 
     ## Create a role assignment from the role definition ids available in each policies initiatives
+    # Role assignment is done on the Policy assignment Identity and on the User Managed Identity used for the deployment script on ARM Template (used for remediation)
     $roleDefinitionIds = @()
     $initiativePolicy.Properties.PolicyDefinitions.policyDefinitionId | ForEach-Object { 
       $AzPolicyDefinition = Get-AzPolicyDefinition -Id $_
@@ -78,6 +92,25 @@ foreach ($item in Get-Item .\initiatives\*\policy.parameters.json) {
       if (!$AzRoleAssignment) {
         New-AzRoleAssignment -Scope "$($assign.properties.scope)" -ObjectId $objectID -RoleDefinitionId "$($roleDefinitionId.Split("/")[-1])"
       }
+    }
+
+    ## User Managed Identity used for the deployment script on ARM Template (used for remediation)
+    if ($assign.properties.parameters | Get-Member | Where-Object { $_.Name -like "identityId" } ) {
+      $AzUserAssignedIdentity = Get-AzUserAssignedIdentity -ResourceGroupName $assign.properties.parameters.identityId.value.split("/")[-5] -Name $assign.properties.parameters.identityId.value.split("/")[-1]
+
+      $AzRoleAssignment = Get-AzRoleAssignment -Scope "$($assign.properties.scope)" -ObjectId $AzUserAssignedIdentity.PrincipalId -RoleDefinitionId $deploymentScriptMinimumPrivilege.Id -ErrorAction SilentlyContinue
+      if (!$AzRoleAssignment) {
+        New-AzRoleAssignment -Scope "$($assign.properties.scope)" -ObjectId $AzUserAssignedIdentity.PrincipalId -RoleDefinitionId $deploymentScriptMinimumPrivilege.Id
+      }
+
+      foreach ($roleDefinitionId in $roleDefinitionIds) {
+      
+        $AzRoleAssignment = Get-AzRoleAssignment -Scope "$($assign.properties.scope)" -ObjectId $AzUserAssignedIdentity.PrincipalId -RoleDefinitionId "$($roleDefinitionId.Split("/")[-1])" -ErrorVariable notPresent -ErrorAction SilentlyContinue
+        if (!$AzRoleAssignment) {
+          New-AzRoleAssignment -Scope "$($assign.properties.scope)" -ObjectId $AzUserAssignedIdentity.PrincipalId -RoleDefinitionId "$($roleDefinitionId.Split("/")[-1])"
+        }
+      }
+
     }
 
     ## Start a compliance scan

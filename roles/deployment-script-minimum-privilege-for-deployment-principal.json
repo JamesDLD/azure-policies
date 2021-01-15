@@ -1,0 +1,16 @@
+{
+  "Name": "Deployment script minimum privilege for deployment principal",
+  "Description": "Configure least privilege for the deployment principal in deployment script",
+  "Id": null,
+  "IsCustom": true,
+  "Actions": [
+    "Microsoft.Storage/storageAccounts/*",
+    "Microsoft.ContainerInstance/containerGroups/*",
+    "Microsoft.Resources/deployments/*",
+    "Microsoft.Resources/deploymentScripts/*"
+  ],
+  "NotActions": [],
+  "AssignableScopes": [
+    "/providers/Microsoft.Management/managementGroups/core"
+  ]
+}

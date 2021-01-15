@@ -22,5 +22,11 @@
             "strongType": "Microsoft.OperationalInsights/workspaces",
             "assignPermissions": true
         }
+    },
+    "identityId": {
+        "type": "string",
+        "metadata": {
+            "description": "Specifies the ID of the user-assigned managed identity used for deployment scripts in ARM templates."
+        }
     }
 }
