@@ -72,6 +72,10 @@
                                         "type": "string",
                                         "defaultValue": "[utcNow()]"
                                     },
+                                    "minimumTlsVersion": {
+                                        "type": "string",
+                                        "defaultValue": "TLS1_2"
+                                    },
                                     "resourceName": {
                                         "type": "string"
                                     }
@@ -93,9 +97,9 @@
                                         "kind": "AzurePowerShell",
                                         "properties": {
                                             "forceUpdateTag": "[parameters('utcValue')]",
-                                            "azPowerShellVersion": "3.0",
+                                            "azPowerShellVersion": "5.3",
                                             "timeout": "P1D",
-                                            "arguments": "[format(' -saName {0} -saResourceGroupName {1} -minimumTlsVersion {2}', parameters('resourceName'), resourceGroup().name, 'TLS1_2')]", 
+                                            "arguments": "[format(' -saName {0} -saResourceGroupName {1} -minimumTlsVersion {2}', parameters('resourceName'), resourceGroup().name, parameters('minimumTlsVersion'))]", 
                                             "scriptContent": "
 
                             param(
@@ -106,39 +110,7 @@
                               
                               $ErrorActionPreference = 'Stop'
                               $DeploymentScriptOutputs = @{}
-
-                              ################################################################################
-                              #                                 Function
-                              ################################################################################
-                              Function Generate_Log_Action([string]$Action, [ScriptBlock]$Command) {
-                                  $Output = 'Info : '+$Action+'  ... '
-                                  Write-Host $Output
-                                  Try {
-                                      $Result = Invoke-Command -ScriptBlock $Command 
-                                  }
-                                  Catch {
-                                      $ErrorMessage = $_.Exception.Message
-                                      $Output = 'On action $Action : '+$ErrorMessage
-                                      Write-Error $Output
-                                      $Result = 'Error'
-                                  }
-                                  Return $Result
-                              }
-                              
-                              ################################################################################
-                              #                                 Action
-                              ################################################################################
-                              $Action = 'Read the MinimumTlsVersion property for saName' + $saName + 'with saResourceGroupName' + $saResourceGroupName
-                              $Command = { Get-AzStorageAccount -ResourceGroupName $saResourceGroupName -Name $saName -ErrorAction Stop }
-                              $sa = Generate_Log_Action -Action $Action -Command $Command 
-                              if ($sa -eq 'Error') { Exit 1 }
-                              
-                              if ($sa.MinimumTlsVersion -ne $minimumTlsVersion) {
-                                  $Action = 'Update the MinimumTlsVersion version for the storage account to' + $minimumTlsVersion + 'for saName' + $saName + 'with saResourceGroupName' + $saResourceGroupName
-                                  $Command = { Set-AzStorageAccount -ResourceGroupName $saResourceGroupName -AccountName $saName -MinimumTlsVersion $minimumTlsVersion -WhatIf -ErrorAction Stop }
-                                  $Result = Generate_Log_Action -Action $Action -Command $Command 
-                                  if ($Result -eq 'Error') { Exit 1 }
-                              }
+                              Set-AzStorageAccount -ResourceGroupName $saResourceGroupName -AccountName $saName -MinimumTlsVersion $minimumTlsVersion
                             
                                 ",
                                             "cleanupPreference": "Always",
