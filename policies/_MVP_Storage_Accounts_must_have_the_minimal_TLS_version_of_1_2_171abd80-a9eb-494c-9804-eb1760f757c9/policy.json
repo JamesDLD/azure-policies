@@ -59,70 +59,81 @@
                         "properties": {
                             "mode": "incremental",
                             "template": {
-                                "$schema": "http://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                                "contentVersion": "1.0.0.0",
-                                "parameters": {
-                                    "identityId": {
-                                        "type": "string",
-                                        "metadata": {
-                                            "description": "Specifies the ID of the user-assigned managed identity used for deployment scripts in ARM templates."
-                                        }
-                                    },
-                                    "utcValue": {
-                                        "type": "string",
-                                        "defaultValue": "[utcNow()]"
-                                    },
-                                    "minimumTlsVersion": {
-                                        "type": "string",
-                                        "defaultValue": "TLS1_2"
-                                    },
-                                    "tags": {
-                                        "type": "object"
-                                    },
-                                    "resourceName": {
-                                        "type": "string"
-                                    }
-                                },
-                                "variables": {},
-                                "resources": [
-                                    {
-                                        "type": "Microsoft.Resources/deploymentScripts",
-                                        "apiVersion": "2020-10-01",
-                                        "tags": "[parameters('tags')]",
-                                        "name": "[concat('policy_storageAccounts_minimumTlsVersion_',parameters('resourceName'))]",
-                                        "location": "[resourceGroup().location]",
-                                        "identity": {
-                                            "type": "UserAssigned",
-                                            "userAssignedIdentities": {
-                                                "[parameters('identityId')]": {
-                                                }
+                                    "$schema": "http://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                                    "contentVersion": "1.0.0.0",
+                                    "parameters": {
+                                        "identityId": {
+                                            "type": "string",
+                                            "metadata": {
+                                                "description": "Specifies the ID of the user-assigned managed identity used for deployment scripts in ARM templates."
                                             }
                                         },
-                                        "kind": "AzurePowerShell",
-                                        "properties": {
-                                            "forceUpdateTag": "[parameters('utcValue')]",
-                                            "azPowerShellVersion": "5.3",
-                                            "timeout": "PT30M",
-                                            "arguments": "[format(' -saName {0} -saResourceGroupName {1} -minimumTlsVersion {2}', parameters('resourceName'), resourceGroup().name, parameters('minimumTlsVersion'))]", 
-                                            "scriptContent": "
-
-                            param(
-                                  [string] [Parameter(Mandatory = $true)] $saName,
-                                  [string] [Parameter(Mandatory = $true)] $saResourceGroupName,
-                                  [string] [Parameter(Mandatory = $true)] $minimumTlsVersion
-                              )
-                              
-                              $ErrorActionPreference = 'Stop'
-                              $DeploymentScriptOutputs = @{}
-                              $DeploymentScriptOutputs += Set-AzStorageAccount -ResourceGroupName $saResourceGroupName -AccountName $saName -MinimumTlsVersion $minimumTlsVersion
-                            
-                                ",
-                                            "cleanupPreference": "Always",
-                                            "retentionInterval": "PT30M"
+                                        "utcValue": {
+                                            "type": "string",
+                                            "defaultValue": "[utcNow()]"
+                                        },
+                                        "minimumTlsVersion": {
+                                            "type": "string",
+                                            "defaultValue": "TLS1_2"
+                                        },
+                                        "tags": {
+                                            "type": "object",
+                                            "defaultValue": {
+                                                "lastTargetResourceName": "[parameters('resourceName')]"
+                                            }
+                                        },
+                                        "resourceName": {
+                                            "type": "string"
                                         }
-                                    }
-                                ],
-                                "outputs": {}
+                                    },
+                                    "variables": {
+                                        "additional_tags": {
+                                            "lastTargetResourceName": "[parameters('resourceName')]"
+                                        }
+                                    },
+                                    "resources": [
+                                        {
+                                            "type": "Microsoft.Resources/deploymentScripts",
+                                            "apiVersion": "2020-10-01",
+                                            "tags": "[union(variables('additional_tags'),parameters('tags'))]",
+                                            "name": "[concat('policy_storageAccounts_minimumTlsVersion_',parameters('resourceName'))]",
+                                            "location": "[resourceGroup().location]",
+                                            "identity": {
+                                                "type": "UserAssigned",
+                                                "userAssignedIdentities": {
+                                                    "[parameters('identityId')]": {
+                                                    }
+                                                }
+                                            },
+                                            "kind": "AzurePowerShell",
+                                            "properties": {
+                                                "forceUpdateTag": "[parameters('utcValue')]",
+                                                "azPowerShellVersion": "5.3",
+                                                "timeout": "PT30M",
+                                                "arguments": "[format(' -saName {0} -saResourceGroupName {1} -minimumTlsVersion {2}', parameters('resourceName'), resourceGroup().name, parameters('minimumTlsVersion'))]",
+                                                "scriptContent": "
+                                
+                                                            param(
+                                                                  [string] [Parameter(Mandatory = $true)] $saName,
+                                                                  [string] [Parameter(Mandatory = $true)] $saResourceGroupName,
+                                                                  [string] [Parameter(Mandatory = $true)] $minimumTlsVersion
+                                                              )
+                                                              
+                                                              $ErrorActionPreference = 'Stop'
+                                                              $DeploymentScriptOutputs = @{}
+                                
+                                                              $output = 'Setting the MinimumTlsVersion to : {0} on the Storage Account : {1} located in the Resource Group : {2}.' -f $MinimumTlsVersion,$saName,$saResourceGroupName
+                                                              $DeploymentScriptOutputs['action1'] = $output
+                                                              Set-AzStorageAccount -ResourceGroupName $saResourceGroupName -AccountName $saName -MinimumTlsVersion $minimumTlsVersion
+                                                              $DeploymentScriptOutputs['end'] = 'End of the operation.'
+                                                            
+                                                                ",
+                                                "cleanupPreference": "Always",
+                                                "retentionInterval": "PT1H"
+                                            }
+                                        }
+                                    ],
+                                    "outputs": {}
                             },
                             "parameters": {
                                 "identityId": {
