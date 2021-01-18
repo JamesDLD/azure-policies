@@ -76,6 +76,9 @@
                                         "type": "string",
                                         "defaultValue": "TLS1_2"
                                     },
+                                    "tags": {
+                                        "type": "object"
+                                    },
                                     "resourceName": {
                                         "type": "string"
                                     }
@@ -85,6 +88,7 @@
                                     {
                                         "type": "Microsoft.Resources/deploymentScripts",
                                         "apiVersion": "2020-10-01",
+                                        "tags": "[parameters('tags')]",
                                         "name": "[concat('policy_storageAccounts_minimumTlsVersion_',parameters('resourceName'))]",
                                         "location": "[resourceGroup().location]",
                                         "identity": {
@@ -98,7 +102,7 @@
                                         "properties": {
                                             "forceUpdateTag": "[parameters('utcValue')]",
                                             "azPowerShellVersion": "5.3",
-                                            "timeout": "P1D",
+                                            "timeout": "PT30M",
                                             "arguments": "[format(' -saName {0} -saResourceGroupName {1} -minimumTlsVersion {2}', parameters('resourceName'), resourceGroup().name, parameters('minimumTlsVersion'))]", 
                                             "scriptContent": "
 
@@ -110,11 +114,11 @@
                               
                               $ErrorActionPreference = 'Stop'
                               $DeploymentScriptOutputs = @{}
-                              Set-AzStorageAccount -ResourceGroupName $saResourceGroupName -AccountName $saName -MinimumTlsVersion $minimumTlsVersion
+                              $DeploymentScriptOutputs += Set-AzStorageAccount -ResourceGroupName $saResourceGroupName -AccountName $saName -MinimumTlsVersion $minimumTlsVersion
                             
                                 ",
                                             "cleanupPreference": "Always",
-                                            "retentionInterval": "P1D"
+                                            "retentionInterval": "PT30M"
                                         }
                                     }
                                 ],
@@ -123,6 +127,9 @@
                             "parameters": {
                                 "identityId": {
                                     "value": "[parameters('identityId')]"
+                                },
+                                "tags": {
+                                    "value": "[field('tags')]"
                                 },
                                 "resourceName": {
                                     "value": "[field('name')]"
