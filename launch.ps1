@@ -67,7 +67,7 @@ foreach ($item in Get-Item .\initiatives\*\policy.parameters.json) {
       -Scope $assign.properties.scope `
       -AssignIdentity `
       -Location $assign.location `
-      -PolicyParameter ($assign.properties.parameters | ConvertTo-Json)
+      -PolicyParameter ($assign.properties.parameters | ConvertTo-Json) #      -NotScope $assign.properties.notScopes `
 
     ## Extract the ObjectID of the Policy Assignment Managed Identity
     $objectID = [GUID]($PolicyAssignment.Identity.principalId) #[GUID]($assign.identity.principalId) #
@@ -85,6 +85,11 @@ foreach ($item in Get-Item .\initiatives\*\policy.parameters.json) {
       }
     }
     $roleDefinitionIds = $roleDefinitionIds | Select-Object -Unique
+
+    $AzRoleAssignment = Get-AzRoleAssignment -Scope "$($assign.properties.scope)" -ObjectId $objectID -RoleDefinitionId $deploymentScriptMinimumPrivilege.Id -ErrorAction SilentlyContinue
+    if (!$AzRoleAssignment) {
+      New-AzRoleAssignment -Scope "$($assign.properties.scope)" -ObjectId $objectID -RoleDefinitionId $deploymentScriptMinimumPrivilege.Id
+    }
 
     foreach ($roleDefinitionId in $roleDefinitionIds) {
       
