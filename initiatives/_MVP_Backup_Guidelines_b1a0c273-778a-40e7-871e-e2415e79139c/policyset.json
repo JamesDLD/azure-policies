@@ -1,0 +1,56 @@
+{
+    "id": "/providers/Microsoft.Management/managementGroups/core/providers/Microsoft.Authorization/policySetDefinitions/b1a0c273-778a-40e7-871e-e2415e79139c",
+    "type": "Microsoft.Authorization/policySetDefinitions",
+    "name": "b1a0c273-778a-40e7-871e-e2415e79139c",
+    "properties": {
+        "displayName": "[MVP] Backup Guidelines",
+        "policyType": "Custom",
+        "metadata": {
+            "category": "Backup"
+        },
+        "parameters": {
+            "effect": {
+                "type": "String",
+                "metadata": {
+                    "displayName": "Effect",
+                    "description": "Enable, disable or audit the execution of the policy"
+                },
+                "allowedValues": [
+                    "DeployIfNotExists",
+                    "Disabled",
+                    "AuditIfNotExists"
+                ],
+                "defaultValue": "DeployIfNotExists"
+            },
+            "identityId": {
+                "type": "string",
+                "metadata": {
+                    "description": "Specifies the ID of the user-assigned managed identity used for deployment scripts in ARM templates."
+                }
+            }
+        },
+        "policyDefinitions": [
+            {
+                "policyDefinitionReferenceId": "_MVP_Key_vaults_should_have_soft_delete_enabled",
+                "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/core/providers/Microsoft.Authorization/policyDefinitions/edab915c-aea8-4f80-900a-6e926567e709",
+                "parameters": {
+                    "effect": {
+                        "value": "[parameters('effect')]"
+                    },
+                    "identityId": {
+                        "value": "[parameters('identityId')]"
+                    }
+                }
+            },
+            {
+                "policyDefinitionReferenceId": "Azure_Backup_should_be_enabled_for_Virtual_Machines",
+                "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/013e242c-8828-4970-87b3-ab247555486d",
+                "parameters": {
+                    "effect": {
+                        "value": "AuditIfNotExists"
+                    }
+                }
+            }
+        ]
+    }
+}

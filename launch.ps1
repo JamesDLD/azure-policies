@@ -5,6 +5,7 @@ Set-StrictMode -Version 2
 $ErrorActionPreference = "Stop"
 $complianceJobs = @()
 $AzRoleDefinitions = @()
+$Scopes = @()
 
 ################################################################################
 #                                 Connectivity
@@ -118,17 +119,24 @@ foreach ($item in Get-Item .\initiatives\*\policy.parameters.json) {
 
     }
 
-    ## Start a compliance scan
-    if ($assign.properties.scope -like "*resourceGroups*") {
-      $complianceJobs += Start-AzPolicyComplianceScan -ResourceGroupName $($assign.properties.scope).Split("/")[-1] -AsJob
-    }
-    else {
-      $complianceJobs += Start-AzPolicyComplianceScan -AsJob
-    }
-    <#
-    Memo to get the job info --> 
-    $complianceJobs | Select-Object Id, State, PSBeginTime
-    #>
+    ## Prepare the compliance scan
+    $Scopes += $assign.properties.scope
     
   }
 }
+
+## Start a compliance scan
+$Scopes = $Scopes | Select-Object -Unique
+foreach ($Scope in $Scopes) {
+  if ($Scope -like "*resourceGroups*") {
+    $complianceJobs += Start-AzPolicyComplianceScan -ResourceGroupName $Scope.Split("/")[-1] -AsJob
+  }
+  else {
+    $complianceJobs += Start-AzPolicyComplianceScan -AsJob
+  }
+}
+
+<#
+Memo to get the job info --> 
+$complianceJobs | Select-Object Id, State, PSBeginTime
+#>

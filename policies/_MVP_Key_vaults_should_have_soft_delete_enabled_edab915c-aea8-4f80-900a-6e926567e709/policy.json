@@ -1,13 +1,13 @@
 {
-    "id": "/providers/Microsoft.Management/managementGroups/core/providers/Microsoft.Authorization/policyDefinitions/3b82b976-c972-47a7-a5b4-414653acae6b",
+    "id": "/providers/Microsoft.Management/managementGroups/core/providers/Microsoft.Authorization/policyDefinitions/edab915c-aea8-4f80-900a-6e926567e709",
     "type": "Microsoft.Authorization/policyDefinitions",
-    "name": "3b82b976-c972-47a7-a5b4-414653acae6b",
+    "name": "edab915c-aea8-4f80-900a-6e926567e709",
     "properties": {
-        "displayName": "[MVP] Deploy Workspace-based Application Insights",
+        "displayName": "[MVP] Key vaults should have soft delete enabled",
         "policyType": "Custom",
         "mode": "Indexed",
         "metadata": {
-            "category": "Log Monitor"
+            "category": "Backup"
         },
         "parameters": {
             "effect": {
@@ -28,15 +28,6 @@
                 "metadata": {
                     "description": "Specifies the ID of the user-assigned managed identity used for deployment scripts in ARM templates."
                 }
-            },
-            "logAnalytics": {
-                "type": "String",
-                "metadata": {
-                    "displayName": "Log Analytics workspace",
-                    "description": "Select Log Analytics workspace from dropdown list. If this workspace is outside of the scope of the assignment you must manually grant 'Log Analytics Contributor' permissions (or similar) to the policy assignment's principal ID.",
-                    "strongType": "omsWorkspace",
-                    "assignPermissions": true
-                }
             }
         },
         "policyRule": {
@@ -44,26 +35,29 @@
                 "allOf": [
                     {
                         "field": "type",
-                        "equals": "Microsoft.Insights/components"
+                        "equals": "Microsoft.KeyVault/vaults"
                     }
                 ]
             },
             "then": {
                 "effect": "[parameters('effect')]",
                 "details": {
-                    "type": "Microsoft.Insights/components",
+                    "type": "Microsoft.KeyVault/vaults",
                     "name": "[field('name')]",
                     "existenceCondition": {
-                        "allOf": [
+                        "anyOf": [
                             {
-                                "field": "Microsoft.Insights/components/IngestionMode",
-                                "equals": "LogAnalytics"
+                                "field": "Microsoft.KeyVault/vaults/enableSoftDelete",
+                                "exists": "true"
+                            },
+                            {
+                                "field": "Microsoft.KeyVault/vaults/enableSoftDelete",
+                                "equals": "true"
                             }
                         ]
                     },
                     "roleDefinitionIds": [
-                        "/providers/microsoft.authorization/roleDefinitions/749f88d5-cbae-40b8-bcfc-e573ddc772fa",
-                        "/providers/microsoft.authorization/roleDefinitions/ae349356-3a1b-4a5e-921d-050484c6347e",
+                        "/providers/microsoft.authorization/roleDefinitions/f25e0fa2-a7c8-4377-a976-54943a77a395",
                         "/providers/microsoft.authorization/roleDefinitions/f1a07417-d97a-45cb-824c-7a7467783830"
                     ],
                     "deployment": {
@@ -88,9 +82,6 @@
                                             "lastTargetResourceName": "[parameters('resourceName')]"
                                         }
                                     },
-                                    "logAnalytics": {
-                                        "type": "string"
-                                    },
                                     "utcValue": {
                                         "type": "string",
                                         "defaultValue": "[utcNow()]"
@@ -106,7 +97,7 @@
                                         "type": "Microsoft.Resources/deploymentScripts",
                                         "apiVersion": "2020-10-01",
                                         "tags": "[union(variables('additional_tags'),parameters('tags'))]",
-                                        "name": "[concat('policy_insightsComponents_workspaceBased_',parameters('resourceName'))]",
+                                        "name": "[concat('policy_keyVaultVaults_softDelele_',parameters('resourceName'))]",
                                         "location": "[resourceGroup().location]",
                                         "identity": {
                                             "type": "UserAssigned",
@@ -119,27 +110,15 @@
                                             "forceUpdateTag": "[parameters('utcValue')]",
                                             "AzCliVersion": "2.15.0",
                                             "timeout": "PT30M",
-                                            "arguments": "[format('{0} {1} {2}', parameters('resourceName'), resourceGroup().name, parameters('logAnalytics'))]",
-                                            "scriptContent": "
-                            #Variable
-                            extensionNames=$(az extension list | jq -r '.[].name')  
-                            extensionName='application-insights'
-                            
-                            #Pre-requisites
-                            if (echo $extensionNames  | fgrep -q $extensionName); then
-                                echo \"Extension $extensionName is available\";
-                            else
-                                echo \"Installing extension $extensionName\";
-                                az extension add -n $extensionName --yes;
-                            fi
-                            
+                                            "arguments": "[format('{0} {1} {2}', parameters('resourceName'), resourceGroup().name, subscription().subscriptionId)]",
+                                            "scriptContent": "                            
                             #Action
-                            before=$(az monitor app-insights component show --app $1 -g $2 -o json);
+                            before=$(az keyvault show --subscription $3 -g $2 -n $1 -o json);
                             
-                            echo \"Setting the app-insights component as workspaced-based for resource : $1 located in the resource group : $2 to the log analytics workspace id : $3\"; 
-                            result=$(az monitor app-insights component update --app $1 -g $2 --workspace $3); 
+                            echo \"Enabling soft-delete for Key Vault on the resource : $1 located in the resource group : $2 and subscription : $3\"; 
+                            result=$(az keyvault update --subscription $3 -g $2 -n $1 --enable-soft-delete true); 
                             
-                            after=$(az monitor app-insights component show --app $1 -g $2 -o json);
+                            after=$(az keyvault show --subscription $3 -g $2 -n $1 -o json);
                             echo \"{ \"before_after\": [ ${before},${after} ] }\" > $AZ_SCRIPTS_OUTPUT_PATH;
                                             ",
                                             "cleanupPreference": "Always",
@@ -158,9 +137,6 @@
                                 },
                                 "tags": {
                                     "value": "[field('tags')]"
-                                },
-                                "logAnalytics": {
-                                    "value": "[parameters('logAnalytics')]"
                                 }
                             }
                         }
