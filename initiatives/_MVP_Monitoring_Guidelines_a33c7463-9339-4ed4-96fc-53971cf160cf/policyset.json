@@ -20,7 +20,7 @@
                     "Disabled",
                     "AuditIfNotExists"
                 ],
-                "defaultValue": "DeployIfNotExists" 
+                "defaultValue": "DeployIfNotExists"
             },
             "identityId": {
                 "type": "string",
@@ -50,6 +50,18 @@
                 "metadata": {
                     "displayName": "Enable logs",
                     "description": "Whether to enable logs stream to the Log Analytics workspace - True or False"
+                },
+                "allowedValues": [
+                    "True",
+                    "False"
+                ],
+                "defaultValue": "True"
+            },
+            "metricsEnabled": {
+                "type": "String",
+                "metadata": {
+                    "displayName": "Enable metrics",
+                    "description": "Whether to enable metrics stream to the Log Analytics workspace - True or False"
                 },
                 "allowedValues": [
                     "True",
@@ -143,6 +155,27 @@
                     },
                     "logAnalytics": {
                         "value": "[parameters('logAnalytics')]"
+                    }
+                }
+            },
+            {
+                "policyDefinitionReferenceId": "Deploy_Diagnostic_Settings_for_Key_Vault_to_Log_Analytics_workspace",
+                "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/bef3f64c-5290-43b7-85b0-9b254eef4c47",
+                "parameters": {
+                    "effect": {
+                        "value": "[parameters('effect')]"
+                    },
+                    "profileName": {
+                        "value": "[parameters('profileName')]"
+                    },
+                    "logAnalytics": {
+                        "value": "[parameters('logAnalytics')]"
+                    },
+                    "metricsEnabled": {
+                        "value": "[parameters('metricsEnabled')]"
+                    },
+                    "logsEnabled": {
+                        "value": "[parameters('logsEnabled')]"
                     }
                 }
             }
