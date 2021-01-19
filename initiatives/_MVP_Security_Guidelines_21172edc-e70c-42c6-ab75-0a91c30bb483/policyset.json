@@ -9,6 +9,25 @@
             "category": "Security Center"
         },
         "parameters": {
+            "effect": {
+                "type": "String",
+                "metadata": {
+                    "displayName": "Effect",
+                    "description": "Enable, disable or audit the execution of the policy"
+                },
+                "allowedValues": [
+                    "DeployIfNotExists",
+                    "Disabled",
+                    "AuditIfNotExists"
+                ],
+                "defaultValue": "DeployIfNotExists"
+            },
+            "identityId": {
+                "type": "string",
+                "metadata": {
+                    "description": "Specifies the ID of the user-assigned managed identity used for deployment scripts in ARM templates."
+                }
+            },
             "resourceGroupName": {
                 "type": "String",
                 "metadata": {
@@ -33,11 +52,15 @@
                     "assignPermissions": true
                 }
             },
-            "identityId": {
+            "minimumTlsVersion": {
                 "type": "string",
                 "metadata": {
-                    "description": "Specifies the ID of the user-assigned managed identity used for deployment scripts in ARM templates."
-                }
+                    "description": "Specifies the minimum Tls Version."
+                },
+                "allowedValues": [
+                    "TLS1_2"
+                ],
+                "defaultValue": "TLS1_2"
             }
         },
         "policyDefinitions": [
@@ -96,14 +119,17 @@
                 }
             },
             {
-                "policyDefinitionReferenceId": "_MVP_Storage_Accounts_must_have_the_minimal_TLS_version_of_1_2",
+                "policyDefinitionReferenceId": "_MVP_Latest_TLS_version_should_be_used_in_your_Storage_Accounts",
                 "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/core/providers/Microsoft.Authorization/policyDefinitions/171abd80-a9eb-494c-9804-eb1760f757c9",
                 "parameters": {
                     "effect": {
-                        "value": "DeployIfNotExists"
+                        "value": "[parameters('effect')]"
                     },
                     "identityId": {
                         "value": "[parameters('identityId')]"
+                    },
+                    "minimumTlsVersion": {
+                        "value": "[parameters('minimumTlsVersion')]"
                     }
                 }
             }

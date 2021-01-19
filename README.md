@@ -2,13 +2,13 @@
 
 # Content
 Share Azure Policies with the community.
-Use of builtin Azure policies, and custom policies that are prefixed by the trigramme "MVP".
+Use of built-in Azure policies, and custom policies that are prefixed by the trigram "MVP".
 
 These are the guidelines used for the remediation activities ([effect "DeployIfNotExists"](https://docs.microsoft.com/en-us/azure/governance/policy/how-to/remediate-resources?WT.mc_id=AZ-MVP-5003548)):
-- Use of ARM template whenever the remediation action create a new resources.
+- Use of ARM template whenever the remediation action creates a new resource.
 - Use of [deployment scripts in ARM templates](https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/deployment-script-template?WT.mc_id=AZ-MVP-5003548) whenever the remediation action need to modify a resource that already exist. 
 
-I do recommend thoses guidelines to prevent some change to be pushed by ARM template on parameters you don't want to touch.
+I do recommend these guidelines to prevent some change to be pushed by ARM template on parameters you don't want to touch.
 You can consult this article [ARM template deployment what-if operation](https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/template-deploy-what-if?WT.mc_id=AZ-MVP-5003548) for more information.
 
 # Reference
@@ -21,7 +21,7 @@ You can consult this article [ARM template deployment what-if operation](https:/
 - [A Log Analytics workspace with the access control mode set to the use resource or workspace permissions setting](https://docs.microsoft.com/en-us/azure/azure-monitor/learn/quick-create-workspace?WT.mc_id=AZ-MVP-5003548)
 - [A user-assigned managed identity. This identity is used to perform Azure-specific some policy remediation actions through the deployment scripts in ARM templates](https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/template-tutorial-deployment-script?WT.mc_id=DOP-MVP-5003548)
 - [Configure the minimum permissions for this managed identity](https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/deployment-script-template?WT.mc_id=AZ-MVP-5003548#configure-the-minimum-permissions)
-- (If using the script [launch.ps1](launch.ps1) ) PowerShell modules : Az.ManagedServiceIdentity (min 0.7.3), Az.PolicyInsights (min 1.3.1)
+- (If using the script [launch.ps1](launch.ps1)) PowerShell modules : Az.ManagedServiceIdentity (min 0.7.3), Az.PolicyInsights (min 1.3.1)
 
 # Policies
 ## High Level View
@@ -41,7 +41,7 @@ You can consult this article [ARM template deployment what-if operation](https:/
 - [Secure transfer to storage accounts should be enabled](https://docs.microsoft.com/fr-fr/azure/storage/common/policy-reference?toc=%2Fazure%2Fstorage%2Fblobs%2Ftoc.json&WT.mc_id=AZ-MVP-5003548)
 - [Latest TLS version should be used in your Web App](https://azure.microsoft.com/fr-fr/updates/app-service-and-functions-hosted-apps-can-now-update-tls-versions/?WT.mc_id=DOP-MVP-5003548)
 - [Latest TLS version should be used in your Function App](https://azure.microsoft.com/fr-fr/updates/app-service-and-functions-hosted-apps-can-now-update-tls-versions/?WT.mc_id=DOP-MVP-5003548)
-- [ [MVP] Storage Accounts must have the minimal TLS version of 1.2](https://docs.microsoft.com/en-us/azure/storage/common/transport-layer-security-configure-minimum-version?toc=%2Fazure%2Fstorage%2Fblobs%2Ftoc.json&WT.mc_id=AZ-MVP-5003548)
+- [ [MVP] Latest TLS version should be used in your Storage Accounts](https://docs.microsoft.com/en-us/azure/storage/common/transport-layer-security-configure-minimum-version?toc=%2Fazure%2Fstorage%2Fblobs%2Ftoc.json&WT.mc_id=AZ-MVP-5003548)
 
 
 # How to
@@ -73,7 +73,7 @@ Some detail are explained [here](https://github.com/Azure/actions-workflow-sampl
           policies/**
           initiatives/**
 
-*Important note* : if you want to proceed assignment of policies that use make sure to fill in the App Registration detail into the following brackets on the assign.<Policy>.json file
+*Important note*: if you want to proceed assignment of policies that use make sure to fill in the App Registration detail into the following brackets on the assign.<Policy>.json file
 ```
 "identity": {
   "principalId": "The Identity principalId",

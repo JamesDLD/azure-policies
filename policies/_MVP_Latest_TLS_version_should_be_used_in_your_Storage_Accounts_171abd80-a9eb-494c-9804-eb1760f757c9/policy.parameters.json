@@ -17,5 +17,14 @@
         "metadata": {
             "description": "Specifies the ID of the user-assigned managed identity used for deployment scripts in ARM templates."
         }
+    },
+    "minimumTlsVersion": {
+        "type": "string",
+        "metadata": {
+            "description": "Specifies the minimum Tls Version."
+        },
+        "allowedValues": [
+            "TLS1_2"
+        ]
     }
 }

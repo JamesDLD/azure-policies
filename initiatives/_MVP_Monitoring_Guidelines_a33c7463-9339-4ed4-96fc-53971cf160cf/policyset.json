@@ -20,7 +20,13 @@
                     "Disabled",
                     "AuditIfNotExists"
                 ],
-                "defaultValue": "DeployIfNotExists"
+                "defaultValue": "DeployIfNotExists" 
+            },
+            "identityId": {
+                "type": "string",
+                "metadata": {
+                    "description": "Specifies the ID of the user-assigned managed identity used for deployment scripts in ARM templates."
+                }
             },
             "profileName": {
                 "type": "String",
@@ -129,11 +135,14 @@
                 "policyDefinitionReferenceId": "_MVP_Deploy_Workspace_based_Application_Insights",
                 "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/core/providers/Microsoft.Authorization/policyDefinitions/3b82b976-c972-47a7-a5b4-414653acae6b",
                 "parameters": {
-                    "logAnalytics": {
-                        "value": "[parameters('logAnalytics')]"
-                    },
                     "effect": {
                         "value": "[parameters('effect')]"
+                    },
+                    "identityId": {
+                        "value": "[parameters('identityId')]"
+                    },
+                    "logAnalytics": {
+                        "value": "[parameters('logAnalytics')]"
                     }
                 }
             }

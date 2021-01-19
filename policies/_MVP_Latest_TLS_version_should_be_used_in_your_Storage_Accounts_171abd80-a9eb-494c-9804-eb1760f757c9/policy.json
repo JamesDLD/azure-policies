@@ -3,7 +3,7 @@
     "type": "Microsoft.Authorization/policyDefinitions",
     "name": "171abd80-a9eb-494c-9804-eb1760f757c9",
     "properties": {
-        "displayName": "[MVP] Storage Accounts must have the minimal TLS version of 1.2",
+        "displayName": "[MVP] Latest TLS version should be used in your Storage Accounts",
         "policyType": "Custom",
         "mode": "Indexed",
         "metadata": {
@@ -22,6 +22,15 @@
                     "AuditIfNotExists"
                 ],
                 "defaultValue": "DeployIfNotExists"
+            },
+            "minimumTlsVersion": {
+                "type": "string",
+                "metadata": {
+                    "description": "Specifies the minimum Tls Version."
+                },
+                "allowedValues": [
+                    "TLS1_2"
+                ]
             },
             "identityId": {
                 "type": "string",
@@ -48,7 +57,7 @@
                         "allOf": [
                             {
                                 "field": "Microsoft.Storage/storageAccounts/minimumTlsVersion",
-                                "equals": "TLS1_2"
+                                "equals": "[parameters('minimumTlsVersion')]"
                             }
                         ]
                     },
@@ -68,13 +77,8 @@
                                                 "description": "Specifies the ID of the user-assigned managed identity used for deployment scripts in ARM templates."
                                             }
                                         },
-                                        "utcValue": {
-                                            "type": "string",
-                                            "defaultValue": "[utcNow()]"
-                                        },
-                                        "minimumTlsVersion": {
-                                            "type": "string",
-                                            "defaultValue": "TLS1_2"
+                                        "resourceName": {
+                                            "type": "string"
                                         },
                                         "tags": {
                                             "type": "object",
@@ -82,8 +86,18 @@
                                                 "lastTargetResourceName": "[parameters('resourceName')]"
                                             }
                                         },
-                                        "resourceName": {
-                                            "type": "string"
+                                        "minimumTlsVersion": {
+                                            "type": "string",
+                                            "metadata": {
+                                                "description": "Specifies the minimum Tls Version."
+                                            },
+                                            "allowedValues": [
+                                                "TLS1_2"
+                                            ]
+                                        },
+                                        "utcValue": {
+                                            "type": "string",
+                                            "defaultValue": "[utcNow()]"
                                         }
                                     },
                                     "variables": {
@@ -96,7 +110,7 @@
                                             "type": "Microsoft.Resources/deploymentScripts",
                                             "apiVersion": "2020-10-01",
                                             "tags": "[union(variables('additional_tags'),parameters('tags'))]",
-                                            "name": "[concat('policy_storageAccounts_minimumTlsVersion_',parameters('resourceName'))]",
+                                            "name": "[concat('policy_StorageStorageAccounts_minimumTlsVersion_',parameters('resourceName'))]",
                                             "location": "[resourceGroup().location]",
                                             "identity": {
                                                 "type": "UserAssigned",
@@ -112,7 +126,6 @@
                                                 "timeout": "PT30M",
                                                 "arguments": "[format(' -saName {0} -saResourceGroupName {1} -minimumTlsVersion {2}', parameters('resourceName'), resourceGroup().name, parameters('minimumTlsVersion'))]",
                                                 "scriptContent": "
-                                
                                                             param(
                                                                   [string] [Parameter(Mandatory = $true)] $saName,
                                                                   [string] [Parameter(Mandatory = $true)] $saResourceGroupName,
@@ -125,8 +138,7 @@
                                                               $output = 'Setting the MinimumTlsVersion to : {0} on the Storage Account : {1} located in the Resource Group : {2}.' -f $MinimumTlsVersion,$saName,$saResourceGroupName
                                                               $DeploymentScriptOutputs['action1'] = $output
                                                               Set-AzStorageAccount -ResourceGroupName $saResourceGroupName -AccountName $saName -MinimumTlsVersion $minimumTlsVersion
-                                                              $DeploymentScriptOutputs['end'] = 'End of the operation.'
-                                                            
+                                                              $DeploymentScriptOutputs['end'] = 'End of the operation'
                                                                 ",
                                                 "cleanupPreference": "Always",
                                                 "retentionInterval": "PT1H"
@@ -139,11 +151,14 @@
                                 "identityId": {
                                     "value": "[parameters('identityId')]"
                                 },
+                                "resourceName": {
+                                    "value": "[field('Name')]"
+                                },
                                 "tags": {
                                     "value": "[field('tags')]"
                                 },
-                                "resourceName": {
-                                    "value": "[field('name')]"
+                                "minimumTlsVersion": {
+                                    "value": "[parameters('minimumTlsVersion')]"
                                 }
                             }
                         }

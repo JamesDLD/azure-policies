@@ -63,54 +63,95 @@
                         "properties": {
                             "mode": "incremental",
                             "template": {
-                                "$schema": "http://schema.management.azure.com/schemas/2014-04-01-preview/deploymentTemplate.json#",
+                                "$schema": "http://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
                                 "contentVersion": "1.0.0.0",
                                 "parameters": {
-                                    "location": {
-                                        "type": "string"
-                                    },
-                                    "logAnalytics": {
-                                        "type": "string"
+                                    "identityId": {
+                                        "type": "string",
+                                        "metadata": {
+                                            "description": "Specifies the ID of the user-assigned managed identity used for deployment scripts in ARM templates."
+                                        }
                                     },
                                     "resourceName": {
                                         "type": "string"
                                     },
                                     "tags": {
-                                        "type": "object"
+                                        "type": "object",
+                                        "defaultValue": {
+                                            "lastTargetResourceName": "[parameters('resourceName')]"
+                                        }
                                     },
-                                    "requestSource": {
+                                    "logAnalytics": {
                                         "type": "string"
+                                    },
+                                    "utcValue": {
+                                        "type": "string",
+                                        "defaultValue": "[utcNow()]"
                                     }
                                 },
-                                "variables": {},
+                                "variables": {
+                                    "additional_tags": {
+                                        "lastTargetResourceName": "[parameters('resourceName')]"
+                                    }
+                                },
                                 "resources": [
                                     {
-                                        "name": "[parameters('resourceName')]",
-                                        "type": "microsoft.insights/components",
-                                        "tags": "[parameters('tags')]",
-                                        "location": "[parameters('location')]",
-                                        "apiVersion": "2020-02-02-preview",
+                                        "type": "Microsoft.Resources/deploymentScripts",
+                                        "apiVersion": "2020-10-01",
+                                        "tags": "[union(variables('additional_tags'),parameters('tags'))]",
+                                        "name": "[concat('policy_insightsComponents_workspaceBased_',parameters('resourceName'))]",
+                                        "location": "[resourceGroup().location]",
+                                        "identity": {
+                                            "type": "UserAssigned",
+                                            "userAssignedIdentities": {
+                                                "[parameters('identityId')]": {
+                                                }
+                                            }
+                                        },
+                                        "kind": "AzureCLI",
                                         "properties": {
-                                            "WorkspaceResourceId": "[parameters('logAnalytics')]",
-                                            "ApplicationId": "[parameters('resourceName')]",
-                                            "Request_Source": "[parameters('requestSource')]"
+                                            "forceUpdateTag": "[parameters('utcValue')]",
+                                            "AzCliVersion": "2.15.0",
+                                            "timeout": "PT30M",
+                                            "arguments": "[format('{0} {1} {2}', parameters('resourceName'), resourceGroup().name, parameters('logAnalytics'))]",
+                                            "scriptContent": "
+                            #Variable
+                            extensionNames=$(az extension list | jq -r '.[].name')  
+                            extensionName='application-insights'
+                            
+                            #Pre-requisites
+                            if (echo $extensionNames  | fgrep -q $extensionName); then
+                                echo \"Extension $extensionName is available\";
+                            else
+                                echo \"Installing extension $extensionName\";
+                                az extension add -n $extensionName --yes;
+                            fi
+                            
+                            #Action
+                            before=$(az monitor app-insights component show --app $1 -g $2 -o json);
+                            
+                            echo \"Setting the app-insights component as workspaced-based for resource : $1 located in the resource group : $2 to the log analytics workspace id : $3\"; 
+                            result=$(az monitor app-insights component update --app $1 -g $2 --workspace $3); 
+                            
+                            after=$(az monitor app-insights component show --app $1 -g $2 -o json);
+                            echo \"{ \"before_after\": [ ${before},${after} ] }\" > $AZ_SCRIPTS_OUTPUT_PATH;
+                                            ",
+                                            "cleanupPreference": "Always",
+                                            "retentionInterval": "PT1H"
                                         }
                                     }
                                 ],
                                 "outputs": {}
                             },
                             "parameters": {
-                                "location": {
-                                    "value": "[field('Location')]"
+                                "identityId": {
+                                    "value": "[parameters('identityId')]"
                                 },
                                 "resourceName": {
                                     "value": "[field('Name')]"
                                 },
                                 "tags": {
                                     "value": "[field('tags')]"
-                                },
-                                "requestSource": {
-                                    "value": "Custom"
                                 },
                                 "logAnalytics": {
                                     "value": "[parameters('logAnalytics')]"
