@@ -178,6 +178,24 @@
                         "value": "[parameters('logsEnabled')]"
                     }
                 }
+            },
+            {
+                "policyDefinitionReferenceId": "_Preview_Deploy_Diagnostic_Settings_for_Recovery_Services_Vault_to_Log_Analytics_workspace_for_resource_specific_categories_",
+                "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/c717fb0c-d118-4c43-ab3d-ece30ac81fb3",
+                "parameters": {
+                    "profileName": {
+                        "value": "[parameters('profileName')]"
+                    },
+                    "logAnalytics": {
+                        "value": "[parameters('logAnalytics')]"
+                    },
+                    "tagName": {
+                        "value": "_Preview_Deploy_Diagnostic_Settings_for_Recovery_Services_Vault_to_Log_Analytics_workspace_for_resource_specific_categories_"
+                    },
+                    "tagValue": {
+                        "value": "exclude"
+                    }
+                }
             }
         ]
     }
