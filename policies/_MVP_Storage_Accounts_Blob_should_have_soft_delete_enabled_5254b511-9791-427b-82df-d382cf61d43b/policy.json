@@ -1,0 +1,207 @@
+{
+    "id": "/providers/Microsoft.Management/managementGroups/core/providers/Microsoft.Authorization/policyDefinitions/5254b511-9791-427b-82df-d382cf61d43b",
+    "type": "Microsoft.Authorization/policyDefinitions",
+    "name": "5254b511-9791-427b-82df-d382cf61d43b",
+    "properties": {
+        "displayName": "[MVP] Storage Accounts Blob should have soft delete enabled",
+        "policyType": "Custom",
+        "mode": "Indexed",
+        "metadata": {
+            "category": "Backup"
+        },
+        "parameters": {
+            "effect": {
+                "type": "String",
+                "metadata": {
+                    "displayName": "Effect",
+                    "description": "Enable, disable or audit the execution of the policy"
+                },
+                "allowedValues": [
+                    "DeployIfNotExists",
+                    "Disabled",
+                    "AuditIfNotExists"
+                ],
+                "defaultValue": "DeployIfNotExists"
+            },
+            "tagName": {
+                "type": "string",
+                "metadata": {
+                    "displayName": "Exclusion Tag Name",
+                    "description": "Name of the tag to use for excluding vaults from this policy. This should be used along with the Exclusion Tag Value parameter."
+                },
+                "defaultValue": "_MVP_Storage_Accounts_Blob_should_have_soft_delete_enabled"
+            },
+            "tagValue": {
+                "type": "string",
+                "metadata": {
+                    "displayName": "Exclusion Tag Value",
+                    "description": "Value of the tag to use for excluding vaults from this policy. This should be used along with the Exclusion Tag Name parameter."
+                },
+                "defaultValue": "exclude"
+            },
+            "blobDeleteRetentionDays": {
+                "type": "string",
+                "metadata": {
+                    "displayName": "Retention Days",
+                    "description": "Soft delete Retention Days for blobs"
+                },
+                "defaultValue": "30"
+            },
+            "identityId": {
+                "type": "string",
+                "metadata": {
+                    "description": "Specifies the ID of the user-assigned managed identity used for deployment scripts in ARM templates."
+                }
+            }
+        },
+        "policyRule": {
+            "if": {
+                "allOf": [
+                    {
+                        "field": "type",
+                        "equals": "Microsoft.Storage/storageAccounts"
+                    },
+                    {
+                        "not": {
+                            "field": "Microsoft.Storage/storageAccounts/isHnsEnabled",
+                            "equals": "true"
+                        }
+                    },
+                    {
+                        "not": {
+                            "field": "[concat('tags[',parameters('tagName'), ']')]",
+                            "equals": "[parameters('tagValue')]"
+                        }
+                    }
+                ]
+            },
+            "then": {
+                "effect": "[parameters('effect')]",
+                "details": {
+                    "type": "Microsoft.Storage/storageAccounts/blobServices",
+                    "name": "[concat(field('name'),'/default')]",
+                    "existenceCondition": {
+                        "anyOf": [
+                            {
+                                "field": "Microsoft.Storage/storageAccounts/blobServices/deleteRetentionPolicy.enabled",
+                                "exists": "true"
+                            },
+                            {
+                                "field": "Microsoft.Storage/storageAccounts/blobServices/deleteRetentionPolicy.enabled",
+                                "equals": "true"
+                            },
+                            {
+                                "field": "Microsoft.Storage/storageAccounts/blobServices/deleteRetentionPolicy.days",
+                                "equals": "[parameters('blobDeleteRetentionDays')]"
+                            }
+                        ]
+                    },
+                    "roleDefinitionIds": [
+                        "/providers/microsoft.authorization/roleDefinitions/f25e0fa2-a7c8-4377-a976-54943a77a395",
+                        "/providers/microsoft.authorization/roleDefinitions/f1a07417-d97a-45cb-824c-7a7467783830"
+                    ],
+                    "deployment": {
+                        "properties": {
+                            "mode": "incremental",
+                            "template": {
+                                "$schema": "http://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                                "contentVersion": "1.0.0.0",
+                                "parameters": {
+                                    "identityId": {
+                                        "type": "string",
+                                        "metadata": {
+                                            "description": "Specifies the ID of the user-assigned managed identity used for deployment scripts in ARM templates."
+                                        }
+                                    },
+                                    "resourceName": {
+                                        "type": "string"
+                                    },
+                                    "blobDeleteRetentionDays": {
+                                        "type": "string"
+                                    },
+                                    "tags": {
+                                        "type": "object",
+                                        "defaultValue": {
+                                            "lastTargetResourceName": "[parameters('resourceName')]"
+                                        }
+                                    },
+                                    "utcValue": {
+                                        "type": "string",
+                                        "defaultValue": "[utcNow()]"
+                                    },
+                                    "policyDefinitionReferenceId": {
+                                        "type": "string"
+                                    }
+                                },
+                                "variables": {
+                                    "additional_tags": {
+                                        "lastTargetResourceName": "[parameters('resourceName')]",
+                                        "_MVP_Deploy_Diagnostic_Settings_for_Storage_Accounts_to_Log_Analytics_workspace": "exclude",
+                                        "_MVP_Latest_TLS_version_should_be_used_in_your_Storage_Accounts": "exclude"
+                                    }
+                                },
+                                "resources": [
+                                    {
+                                        "type": "Microsoft.Resources/deploymentScripts",
+                                        "apiVersion": "2020-10-01",
+                                        "tags": "[union(variables('additional_tags'),parameters('tags'))]",
+                                        "name": "[concat('policy_softDelele_',parameters('resourceName'))]",
+                                        "location": "[resourceGroup().location]",
+                                        "identity": {
+                                            "type": "UserAssigned",
+                                            "userAssignedIdentities": {
+                                                "[parameters('identityId')]": {}
+                                            }
+                                        },
+                                        "kind": "AzureCLI",
+                                        "properties": {
+                                            "forceUpdateTag": "[parameters('utcValue')]",
+                                            "AzCliVersion": "2.15.0",
+                                            "timeout": "PT30M",
+                                            "arguments": "[format('{0} {1} {2}', parameters('resourceName'), resourceGroup().name, parameters('blobDeleteRetentionDays'))]",
+                                            "scriptContent": "                            
+                            #Action
+                            before=$(az storage account show -g $2 -n $1 -o json);
+                            
+                            echo \"Enabling blob soft-delete for Storage Account on the resource : $1 located in the resource group : $2 with the retention : $3\"; 
+                            result=$(az storage blob service-properties delete-policy update --days-retained $3 --account-name $1 --enable true); 
+                            
+                            after=$(az storage account show -g $2 -n $1 -o json);
+                            echo \"{ \"before_after\": [ ${before},${after} ] }\" > $AZ_SCRIPTS_OUTPUT_PATH;
+                                            ",
+                                            "cleanupPreference": "Always",
+                                            "retentionInterval": "PT1H"
+                                        }
+                                    }
+                                ],
+                                "outputs": {
+                                    "policyDefinitionReferenceId": {
+                                        "type": "string",
+                                        "value": "[parameters('policyDefinitionReferenceId')]"
+                                    }
+                                }
+                            },
+                            "parameters": {
+                                "identityId": {
+                                    "value": "[parameters('identityId')]"
+                                },
+                                "resourceName": {
+                                    "value": "[field('Name')]"
+                                },
+                                "blobDeleteRetentionDays": {
+                                    "value": "[parameters('blobDeleteRetentionDays')]"
+                                },
+                                "tags": {
+                                    "value": "[field('tags')]"
+                                },
+                                "policyDefinitionReferenceId": {
+                                    "value": "[parameters('tagName')]"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

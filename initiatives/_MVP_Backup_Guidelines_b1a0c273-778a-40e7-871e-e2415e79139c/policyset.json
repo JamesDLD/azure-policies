@@ -27,12 +27,32 @@
                 "metadata": {
                     "description": "Specifies the ID of the user-assigned managed identity used for deployment scripts in ARM templates."
                 }
+            },
+            "blobDeleteRetentionDays": {
+                "type": "string",
+                "metadata": {
+                    "displayName": "Retention Days",
+                    "description": "Soft delete Retention Days for blobs"
+                },
+                "defaultValue": "30"
             }
         },
         "policyDefinitions": [
             {
                 "policyDefinitionReferenceId": "_MVP_Key_vaults_should_have_soft_delete_enabled",
                 "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/core/providers/Microsoft.Authorization/policyDefinitions/edab915c-aea8-4f80-900a-6e926567e709",
+                "parameters": {
+                    "effect": {
+                        "value": "[parameters('effect')]"
+                    },
+                    "identityId": {
+                        "value": "[parameters('identityId')]"
+                    }
+                }
+            },
+            {
+                "policyDefinitionReferenceId": "_MVP_Storage_Accounts_Blob_should_have_soft_delete_enabled",
+                "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/core/providers/Microsoft.Authorization/policyDefinitions/5254b511-9791-427b-82df-d382cf61d43b",
                 "parameters": {
                     "effect": {
                         "value": "[parameters('effect')]"

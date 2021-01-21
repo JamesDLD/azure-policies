@@ -49,6 +49,7 @@ You can consult this article [ARM template deployment what-if operation](https:/
 
 ## [MVP] Backup Guidelines
 - [ [MVP] Key vaults should have soft delete enabled](https://docs.microsoft.com/en-us/azure/key-vault/general/key-vault-recovery?WT.mc_id=AZ-MVP-5003548)
+- [ [MVP] Storage Accounts Blob should have soft delete enabled](https://docs.microsoft.com/en-us/azure/storage/blobs/soft-delete-blob-overview?WT.mc_id=AZ-MVP-5003548)
 - [Azure Backup should be enabled for Virtual Machines](https://docs.microsoft.com/en-us/azure/backup/policy-reference?WT.mc_id=AZ-MVP-5003548)
 
 # How to
