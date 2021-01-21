@@ -31,6 +31,7 @@ You can consult this article [ARM template deployment what-if operation](https:/
 ![hlv](./images/hlv.png)
 
 ## [MVP] Monitoring Guidelines
+- [[MVP] Deploy Diagnostic Settings for Storage Accounts to Log Analytics workspace](https://docs.microsoft.com/en-us/azure/storage/blobs/monitor-blob-storage?WT.mc_id=AZ-MVP-5003548)
 - [ [MVP] Deploy Diagnostic Settings for Azure Databricks](https://docs.microsoft.com/en-us/azure/databricks/administration-guide/account-settings/azure-diagnostic-logs?WT.mc_id=DOP-MVP-5003548)
 - [ [MVP] Deploy Workspace-based Application Insights](https://docs.microsoft.com/en-us/azure/azure-monitor/app/convert-classic-resource?WT.mc_id=DOP-MVP-5003548)
 - [ [MVP] Deploy Diagnostic Settings for Azure Windows Virtual Desktop](https://medium.com/faun/diagnostic-settings-for-azure-windows-virtual-desktop-resources-part-2-4bfb9ce8d1be)
