@@ -2,7 +2,8 @@
 
 # Content
 Share Azure Policies with the community.
-Use of built-in Azure policies, and custom policies that are prefixed by the trigram "MVP".
+
+The approach is to use [built-in](https://docs.microsoft.com/en-us/azure/governance/policy/samples/built-in-policies?WT.mc_id=AZ-MVP-5003548) Azure policies whenever they exist, otherwise we use custom policies with the trigram "MVP".
 
 These are the guidelines used for the remediation activities ([effect "DeployIfNotExists"](https://docs.microsoft.com/en-us/azure/governance/policy/how-to/remediate-resources?WT.mc_id=AZ-MVP-5003548)):
 - Use of ARM template whenever the remediation action creates a new resource.

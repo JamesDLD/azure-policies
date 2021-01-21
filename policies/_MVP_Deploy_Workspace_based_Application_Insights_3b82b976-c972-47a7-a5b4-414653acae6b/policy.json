@@ -23,6 +23,22 @@
                 ],
                 "defaultValue": "DeployIfNotExists"
             },
+            "tagName": {
+                "type": "string",
+                "metadata": {
+                    "displayName": "Exclusion Tag Name",
+                    "description": "Name of the tag to use for excluding vaults from this policy. This should be used along with the Exclusion Tag Value parameter."
+                },
+                "defaultValue": "_MVP_Deploy_Workspace_based_Application_Insights"
+            },
+            "tagValue": {
+                "type": "string",
+                "metadata": {
+                    "displayName": "Exclusion Tag Value",
+                    "description": "Value of the tag to use for excluding vaults from this policy. This should be used along with the Exclusion Tag Name parameter."
+                },
+                "defaultValue": "exclude"
+            },
             "identityId": {
                 "type": "string",
                 "metadata": {
@@ -45,6 +61,12 @@
                     {
                         "field": "type",
                         "equals": "Microsoft.Insights/components"
+                    },
+                    {
+                        "not": {
+                            "field": "[concat('tags[',parameters('tagName'), ']')]",
+                            "equals": "[parameters('tagValue')]"
+                        }
                     }
                 ]
             },
@@ -94,6 +116,9 @@
                                     "utcValue": {
                                         "type": "string",
                                         "defaultValue": "[utcNow()]"
+                                    },
+                                    "policyDefinitionReferenceId": {
+                                        "type": "string"
                                     }
                                 },
                                 "variables": {
@@ -108,7 +133,7 @@
                                         "type": "Microsoft.Resources/deploymentScripts",
                                         "apiVersion": "2020-10-01",
                                         "tags": "[union(variables('additional_tags'),parameters('tags'))]",
-                                        "name": "[concat('policy_insightsComponents_workspaceBased_',parameters('resourceName'))]",
+                                        "name": "[concat('policy_workspaceBased_',parameters('resourceName'))]",
                                         "location": "[resourceGroup().location]",
                                         "identity": {
                                             "type": "UserAssigned",
@@ -149,7 +174,12 @@
                                         }
                                     }
                                 ],
-                                "outputs": {}
+                                "outputs": {
+                                    "policyDefinitionReferenceId": {
+                                        "type": "string",
+                                        "value": "[parameters('policyDefinitionReferenceId')]"
+                                    }
+                                }
                             },
                             "parameters": {
                                 "identityId": {
@@ -163,6 +193,9 @@
                                 },
                                 "logAnalytics": {
                                     "value": "[parameters('logAnalytics')]"
+                                },
+                                "policyDefinitionReferenceId": {
+                                    "value": "[parameters('tagName')]"
                                 }
                             }
                         }
