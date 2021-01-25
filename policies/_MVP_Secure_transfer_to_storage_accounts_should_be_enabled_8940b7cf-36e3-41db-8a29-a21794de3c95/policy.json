@@ -1,9 +1,9 @@
 {
-    "id": "/providers/Microsoft.Management/managementGroups/core/providers/Microsoft.Authorization/policyDefinitions/171abd80-a9eb-494c-9804-eb1760f757c9",
+    "id": "/providers/Microsoft.Management/managementGroups/core/providers/Microsoft.Authorization/policyDefinitions/8940b7cf-36e3-41db-8a29-a21794de3c95",
     "type": "Microsoft.Authorization/policyDefinitions",
-    "name": "171abd80-a9eb-494c-9804-eb1760f757c9",
+    "name": "8940b7cf-36e3-41db-8a29-a21794de3c95",
     "properties": {
-        "displayName": "[MVP] Latest TLS version should be used in your Storage Accounts",
+        "displayName": "[MVP] Secure transfer to storage accounts should be enabled",
         "policyType": "Custom",
         "mode": "Indexed",
         "metadata": {
@@ -29,7 +29,7 @@
                     "displayName": "Exclusion Tag Name",
                     "description": "Name of the tag to use for excluding vaults from this policy. This should be used along with the Exclusion Tag Value parameter."
                 },
-                "defaultValue": "_MVP_Latest_TLS_version_should_be_used_in_your_Storage_Accounts"
+                "defaultValue": "_MVP_Secure_transfer_to_storage_accounts_should_be_enabled"
             },
             "tagValue": {
                 "type": "string",
@@ -38,15 +38,6 @@
                     "description": "Value of the tag to use for excluding vaults from this policy. This should be used along with the Exclusion Tag Name parameter."
                 },
                 "defaultValue": "exclude"
-            },
-            "minimumTlsVersion": {
-                "type": "string",
-                "metadata": {
-                    "description": "Specifies the minimum Tls Version."
-                },
-                "allowedValues": [
-                    "TLS1_2"
-                ]
             },
             "identityId": {
                 "type": "string",
@@ -63,6 +54,26 @@
                         "equals": "Microsoft.Storage/storageAccounts"
                     },
                     {
+                        "anyOf": [
+                            {
+                            "allOf": [
+                                {
+                                "value": "[requestContext().apiVersion]",
+                                "less": "2019-04-01"
+                                },
+                                {
+                                "field": "Microsoft.Storage/storageAccounts/supportsHttpsTrafficOnly",
+                                "exists": "false"
+                                }
+                            ]
+                            },
+                            {
+                            "field": "Microsoft.Storage/storageAccounts/supportsHttpsTrafficOnly",
+                            "equals": "false"
+                            }
+                        ]
+                    },
+                    {
                         "not": {
                             "field": "[concat('tags[',parameters('tagName'), ']')]",
                             "equals": "[parameters('tagValue')]"
@@ -75,14 +86,6 @@
                 "details": {
                     "type": "Microsoft.Storage/storageAccounts",
                     "name": "[field('name')]",
-                    "existenceCondition": {
-                        "allOf": [
-                            {
-                                "field": "Microsoft.Storage/storageAccounts/minimumTlsVersion",
-                                "equals": "[parameters('minimumTlsVersion')]"
-                            }
-                        ]
-                    },
                     "roleDefinitionIds": [
                         "/providers/microsoft.authorization/roleDefinitions/17d1049b-9a84-46fb-8f53-869881c3d3ab",
                         "/providers/microsoft.authorization/roleDefinitions/f1a07417-d97a-45cb-824c-7a7467783830"
@@ -109,15 +112,6 @@
                                                 "lastTargetResourceName": "[parameters('resourceName')]"
                                             }
                                         },
-                                        "minimumTlsVersion": {
-                                            "type": "string",
-                                            "metadata": {
-                                                "description": "Specifies the minimum Tls Version."
-                                            },
-                                            "allowedValues": [
-                                                "TLS1_2"
-                                            ]
-                                        },
                                         "utcValue": {
                                             "type": "string",
                                             "defaultValue": "[utcNow()]"
@@ -139,7 +133,7 @@
                                             "type": "Microsoft.Resources/deploymentScripts",
                                             "apiVersion": "2020-10-01",
                                             "tags": "[union(variables('additional_tags'),parameters('tags'))]",
-                                            "name": "[concat('policy_minimumTlsVersion_',parameters('resourceName'))]",
+                                            "name": "[concat('policy_enableHttpsTrafficOnly_',parameters('resourceName'))]",
                                             "location": "[resourceGroup().location]",
                                             "identity": {
                                                 "type": "UserAssigned",
@@ -153,20 +147,19 @@
                                                 "forceUpdateTag": "[parameters('utcValue')]",
                                                 "azPowerShellVersion": "5.3",
                                                 "timeout": "PT30M",
-                                                "arguments": "[format(' -saName {0} -saResourceGroupName {1} -minimumTlsVersion {2}', parameters('resourceName'), resourceGroup().name, parameters('minimumTlsVersion'))]",
+                                                "arguments": "[format(' -saName {0} -saResourceGroupName {1}', parameters('resourceName'), resourceGroup().name)]",
                                                 "scriptContent": "
                                                             param(
                                                                   [string] [Parameter(Mandatory = $true)] $saName,
-                                                                  [string] [Parameter(Mandatory = $true)] $saResourceGroupName,
-                                                                  [string] [Parameter(Mandatory = $true)] $minimumTlsVersion
+                                                                  [string] [Parameter(Mandatory = $true)] $saResourceGroupName
                                                               )
                                                               
                                                               $ErrorActionPreference = 'Stop'
                                                               $DeploymentScriptOutputs = @{}
                                 
-                                                              $output = 'Setting the MinimumTlsVersion to : {0} on the Storage Account : {1} located in the Resource Group : {2}.' -f $MinimumTlsVersion,$saName,$saResourceGroupName
+                                                              $output = 'Setting the EnableHttpsTrafficOnly to : True on the Storage Account : {0} located in the Resource Group : {1}.' -f $saName,$saResourceGroupName
                                                               $DeploymentScriptOutputs['action1'] = $output
-                                                              Set-AzStorageAccount -ResourceGroupName $saResourceGroupName -AccountName $saName -MinimumTlsVersion $minimumTlsVersion
+                                                              Set-AzStorageAccount -Name $saName -ResourceGroupName $saResourceGroupName  -EnableHttpsTrafficOnly $True
                                                               $DeploymentScriptOutputs['end'] = 'End of the operation'
                                                                 ",
                                                 "cleanupPreference": "Always",
@@ -190,9 +183,6 @@
                                 },
                                 "tags": {
                                     "value": "[field('tags')]"
-                                },
-                                "minimumTlsVersion": {
-                                    "value": "[parameters('minimumTlsVersion')]"
                                 },
                                 "policyDefinitionReferenceId": {
                                     "value": "[parameters('tagName')]"

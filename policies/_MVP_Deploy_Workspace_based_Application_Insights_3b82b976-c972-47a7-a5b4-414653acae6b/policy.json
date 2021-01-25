@@ -125,7 +125,8 @@
                                     "additional_tags": {
                                         "lastTargetResourceName": "[parameters('resourceName')]",
                                         "_MVP_Deploy_Diagnostic_Settings_for_Storage_Accounts_to_Log_Analytics_workspace": "exclude",
-                                        "_MVP_Latest_TLS_version_should_be_used_in_your_Storage_Accounts": "exclude"
+                                        "_MVP_Latest_TLS_version_should_be_used_in_your_Storage_Accounts": "exclude",
+                                        "_MVP_Secure_transfer_to_storage_accounts_should_be_enabled": "exclude"
                                     }
                                 },
                                 "resources": [

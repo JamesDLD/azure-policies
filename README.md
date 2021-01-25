@@ -33,19 +33,19 @@ You can consult this article [ARM template deployment what-if operation](https:/
 
 ## [MVP] Monitoring Guidelines
 - [[MVP] Deploy Diagnostic Settings for Storage Accounts to Log Analytics workspace](https://docs.microsoft.com/en-us/azure/storage/blobs/monitor-blob-storage?WT.mc_id=AZ-MVP-5003548)
-- [ [MVP] Deploy Diagnostic Settings for Azure Databricks](https://docs.microsoft.com/en-us/azure/databricks/administration-guide/account-settings/azure-diagnostic-logs?WT.mc_id=DOP-MVP-5003548)
-- [ [MVP] Deploy Workspace-based Application Insights](https://docs.microsoft.com/en-us/azure/azure-monitor/app/convert-classic-resource?WT.mc_id=DOP-MVP-5003548)
-- [ [MVP] Deploy Diagnostic Settings for Azure Windows Virtual Desktop](https://medium.com/faun/diagnostic-settings-for-azure-windows-virtual-desktop-resources-part-2-4bfb9ce8d1be)
+- [[MVP] Deploy Diagnostic Settings for Azure Databricks](https://docs.microsoft.com/en-us/azure/databricks/administration-guide/account-settings/azure-diagnostic-logs?WT.mc_id=DOP-MVP-5003548)
+- [[MVP] Deploy Workspace-based Application Insights](https://docs.microsoft.com/en-us/azure/azure-monitor/app/convert-classic-resource?WT.mc_id=DOP-MVP-5003548)
+- [[MVP] Deploy Diagnostic Settings for Azure Windows Virtual Desktop](https://medium.com/faun/diagnostic-settings-for-azure-windows-virtual-desktop-resources-part-2-4bfb9ce8d1be)
 - [Deploy Diagnostic Settings for Key Vault to Log Analytics workspace](https://docs.microsoft.com/en-us/azure/azure-monitor/insights/key-vault-insights-overview?WT.mc_id=AZ-MVP-5003548)
 - [[Preview]: Deploy Diagnostic Settings for Recovery Services Vault to Log Analytics workspace for resource specific categories](https://docs.microsoft.com/en-us/azure/backup/configure-reports?WT.mc_id=AZ-MVP-5003548)
 
 ## [MVP] Security Guidelines
 - [Enable Security Center's auto provisioning of the Log Analytics agent on your subscriptions with custom workspace](https://docs.microsoft.com/en-us/azure/security-center/security-center-enable-data-collection?WT.mc_id=AZ-MVP-5003548)
 - [Deploy export to Log Analytics workspace for Azure Security Center data](https://docs.microsoft.com/en-us/azure/security-center/continuous-export?WT.mc_id=AZ-MVP-5003548)
-- [Secure transfer to storage accounts should be enabled](https://docs.microsoft.com/fr-fr/azure/storage/common/policy-reference?toc=%2Fazure%2Fstorage%2Fblobs%2Ftoc.json&WT.mc_id=AZ-MVP-5003548)
+- [[MVP] Secure transfer to storage accounts should be enabled](https://docs.microsoft.com/en-us/azure/storage/common/storage-require-secure-transfer?toc=%2Fazure%2Fstorage%2Fblobs%2Ftoc.json&WT.mc_id=AZ-MVP-5003548)
+- [[MVP] Latest TLS version should be used in your Storage Accounts](https://docs.microsoft.com/en-us/azure/storage/common/transport-layer-security-configure-minimum-version?toc=%2Fazure%2Fstorage%2Fblobs%2Ftoc.json&WT.mc_id=AZ-MVP-5003548)
 - [Latest TLS version should be used in your Web App](https://azure.microsoft.com/fr-fr/updates/app-service-and-functions-hosted-apps-can-now-update-tls-versions/?WT.mc_id=DOP-MVP-5003548)
 - [Latest TLS version should be used in your Function App](https://azure.microsoft.com/fr-fr/updates/app-service-and-functions-hosted-apps-can-now-update-tls-versions/?WT.mc_id=DOP-MVP-5003548)
-- [ [MVP] Latest TLS version should be used in your Storage Accounts](https://docs.microsoft.com/en-us/azure/storage/common/transport-layer-security-configure-minimum-version?toc=%2Fazure%2Fstorage%2Fblobs%2Ftoc.json&WT.mc_id=AZ-MVP-5003548)
 
 ## [MVP] Backup Guidelines
 - [ [MVP] Key vaults should have soft delete enabled](https://docs.microsoft.com/en-us/azure/key-vault/general/key-vault-recovery?WT.mc_id=AZ-MVP-5003548)

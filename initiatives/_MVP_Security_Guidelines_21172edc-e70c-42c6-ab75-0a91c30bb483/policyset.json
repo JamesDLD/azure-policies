@@ -92,15 +92,6 @@
                 }
             },
             {
-                "policyDefinitionReferenceId": "Secure_transfer_to_storage_accounts_should_be_enabled",
-                "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/404c3081-a854-4457-ae30-26a93ef643f9",
-                "parameters": {
-                    "effect": {
-                        "value": "Audit"
-                    }
-                }
-            },
-            {
                 "policyDefinitionReferenceId": "Latest_TLS_version_should_be_used_in_your_Web_App",
                 "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/f0e6e85b-9b9f-4a4b-b67b-f730d42f1b0b",
                 "parameters": {
@@ -130,6 +121,18 @@
                     },
                     "minimumTlsVersion": {
                         "value": "[parameters('minimumTlsVersion')]"
+                    }
+                }
+            },
+            {
+                "policyDefinitionReferenceId": "_MVP_Secure_transfer_to_storage_accounts_should_be_enabled",
+                "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/core/providers/Microsoft.Authorization/policyDefinitions/8940b7cf-36e3-41db-8a29-a21794de3c95",
+                "parameters": {
+                    "effect": {
+                        "value": "[parameters('effect')]"
+                    },
+                    "identityId": {
+                        "value": "[parameters('identityId')]"
                     }
                 }
             }
