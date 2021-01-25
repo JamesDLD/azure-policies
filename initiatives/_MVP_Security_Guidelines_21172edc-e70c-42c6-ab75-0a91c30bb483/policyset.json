@@ -92,24 +92,6 @@
                 }
             },
             {
-                "policyDefinitionReferenceId": "Latest_TLS_version_should_be_used_in_your_Web_App",
-                "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/f0e6e85b-9b9f-4a4b-b67b-f730d42f1b0b",
-                "parameters": {
-                    "effect": {
-                        "value": "AuditIfNotExists"
-                    }
-                }
-            },
-            {
-                "policyDefinitionReferenceId": "Latest_TLS_version_should_be_used_in_your_Function_App",
-                "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/f9d614c5-c173-4d56-95a7-b4437057d193",
-                "parameters": {
-                    "effect": {
-                        "value": "AuditIfNotExists"
-                    }
-                }
-            },
-            {
                 "policyDefinitionReferenceId": "_MVP_Latest_TLS_version_should_be_used_in_your_Storage_Accounts",
                 "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/core/providers/Microsoft.Authorization/policyDefinitions/171abd80-a9eb-494c-9804-eb1760f757c9",
                 "parameters": {
@@ -163,6 +145,18 @@
             {
                 "policyDefinitionReferenceId": "_MVP_Latest_TLS_version_should_be_used_in_your_API_App",
                 "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/core/providers/Microsoft.Authorization/policyDefinitions/2f6e31f0-d725-49ca-afcd-0d97d563c917",
+                "parameters": {
+                    "effect": {
+                        "value": "[parameters('effect')]"
+                    },
+                    "identityId": {
+                        "value": "[parameters('identityId')]"
+                    }
+                }
+            },
+            {
+                "policyDefinitionReferenceId": "_MVP_Latest_TLS_version_should_be_used_in_your_Function_App",
+                "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/core/providers/Microsoft.Authorization/policyDefinitions/0540a979-31bb-4ddb-9e38-e61ed70d5c95",
                 "parameters": {
                     "effect": {
                         "value": "[parameters('effect')]"

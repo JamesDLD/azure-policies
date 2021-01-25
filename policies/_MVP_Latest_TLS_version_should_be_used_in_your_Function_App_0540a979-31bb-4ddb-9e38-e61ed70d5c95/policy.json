@@ -1,0 +1,205 @@
+{
+    "id": "/providers/Microsoft.Management/managementGroups/core/providers/Microsoft.Authorization/policyDefinitions/0540a979-31bb-4ddb-9e38-e61ed70d5c95",
+    "type": "Microsoft.Authorization/policyDefinitions",
+    "name": "0540a979-31bb-4ddb-9e38-e61ed70d5c95",
+    "properties": {
+        "displayName": "[MVP] Latest TLS version should be used in your Function App",
+        "policyType": "Custom",
+        "mode": "Indexed",
+        "metadata": {
+            "category": "Storage"
+        },
+        "parameters": {
+            "effect": {
+                "type": "String",
+                "metadata": {
+                    "displayName": "Effect",
+                    "description": "Enable, disable or audit the execution of the policy"
+                },
+                "allowedValues": [
+                    "DeployIfNotExists",
+                    "Disabled",
+                    "AuditIfNotExists"
+                ],
+                "defaultValue": "DeployIfNotExists"
+            },
+            "tagName": {
+                "type": "string",
+                "metadata": {
+                    "displayName": "Exclusion Tag Name",
+                    "description": "Name of the tag to use for excluding vaults from this policy. This should be used along with the Exclusion Tag Value parameter."
+                },
+                "defaultValue": "_MVP_Latest_TLS_version_should_be_used_in_your_Function_App"
+            },
+            "tagValue": {
+                "type": "string",
+                "metadata": {
+                    "displayName": "Exclusion Tag Value",
+                    "description": "Value of the tag to use for excluding vaults from this policy. This should be used along with the Exclusion Tag Name parameter."
+                },
+                "defaultValue": "exclude"
+            },
+            "minimumTlsVersion": {
+                "type": "string",
+                "metadata": {
+                    "description": "Specifies the minimum Tls Version."
+                },
+                "allowedValues": [
+                    "1.2"
+                ],
+                "defaultValue": "1.2"
+            },
+            "identityId": {
+                "type": "string",
+                "metadata": {
+                    "description": "Specifies the ID of the user-assigned managed identity used for deployment scripts in ARM templates."
+                }
+            }
+        },
+        "policyRule": {
+            "if": {
+                "allOf": [
+                    {
+                        "field": "type",
+                        "equals": "Microsoft.Web/sites"
+                    },
+                    {
+                        "field": "kind",
+                        "like": "functionapp*"
+                    },
+                    {
+                        "not": {
+                            "field": "[concat('tags[',parameters('tagName'), ']')]",
+                            "equals": "[parameters('tagValue')]"
+                        }
+                    }
+                ]
+            },
+            "then": {
+                "effect": "[parameters('effect')]",
+                "details": {
+                    "type": "Microsoft.Web/sites/config",
+                    "name": "web",
+                    "existenceCondition": {
+                      "field": "Microsoft.Web/sites/config/minTlsVersion",
+                      "equals": "[parameters('minimumTlsVersion')]"
+                    },
+                    "roleDefinitionIds": [
+                        "/providers/microsoft.authorization/roleDefinitions/de139f84-1756-47ae-9be6-808fbbe84772",
+                        "/providers/microsoft.authorization/roleDefinitions/f1a07417-d97a-45cb-824c-7a7467783830"
+                    ],
+                    "deployment": {
+                        "properties": {
+                            "mode": "incremental",
+                            "template": {
+                                    "$schema": "http://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                                    "contentVersion": "1.0.0.0",
+                                    "parameters": {
+                                        "identityId": {
+                                            "type": "string",
+                                            "metadata": {
+                                                "description": "Specifies the ID of the user-assigned managed identity used for deployment scripts in ARM templates."
+                                            }
+                                        },
+                                        "resourceName": {
+                                            "type": "string"
+                                        },
+                                        "tags": {
+                                            "type": "object",
+                                            "defaultValue": {
+                                                "lastTargetResourceName": "[parameters('resourceName')]"
+                                            }
+                                        },
+                                        "minimumTlsVersion": {
+                                            "type": "string",
+                                            "metadata": {
+                                                "description": "Specifies the minimum Tls Version."
+                                            },
+                                            "allowedValues": [
+                                                "1.2"
+                                            ]
+                                        },
+                                        "utcValue": {
+                                            "type": "string",
+                                            "defaultValue": "[utcNow()]"
+                                        },
+                                        "policyDefinitionReferenceId": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "variables": {
+                                        "additional_tags": {
+                                            "lastTargetResourceName": "[parameters('resourceName')]",
+                                            "_MVP_Deploy_Diagnostic_Settings_for_Storage_Accounts_to_Log_Analytics_workspace": "exclude",
+                                            "_MVP_Latest_TLS_version_should_be_used_in_your_Storage_Accounts": "exclude",
+                                            "_MVP_Secure_transfer_to_storage_accounts_should_be_enabled": "exclude",
+                                            "_MVP_Storage_account_public_access_should_be_disallowed": "exclude",
+                                            "_MVP_Storage_Accounts_Blob_should_have_soft_delete_enabled": "exclude"
+                                        }
+                                    },
+                                    "resources": [
+                                        {
+                                            "type": "Microsoft.Resources/deploymentScripts",
+                                            "apiVersion": "2020-10-01",
+                                            "tags": "[union(variables('additional_tags'),parameters('tags'))]",
+                                            "name": "[concat('policy_minimumTlsVersion_',parameters('resourceName'))]",
+                                            "location": "[resourceGroup().location]",
+                                            "identity": {
+                                                "type": "UserAssigned",
+                                                "userAssignedIdentities": {
+                                                    "[parameters('identityId')]": {
+                                                    }
+                                                }
+                                            },
+                                            "kind": "AzureCLI",
+                                            "properties": {
+                                                "forceUpdateTag": "[parameters('utcValue')]",
+                                                "AzCliVersion": "2.15.0",
+                                                "timeout": "PT30M",
+                                                "arguments": "[format('{0} {1} {2}', parameters('resourceName'), resourceGroup().name, parameters('minimumTlsVersion'))]",
+                                                "scriptContent": " 
+                                                #Action
+                                                before=$(az functionapp config show -n $1 -g $2 -o json);
+                                                
+                                                echo \"Setting the MinimumTlsVersion to : $3 for Function App : $1 located in the resource group : $2\"; 
+                                                result=$(az functionapp config set -n $1 -g $2 --min-tls-version $3); 
+                                                
+                                                after=$(az functionapp config show -n $1 -g $2 -o json);
+                                                echo \"{ \"before_after\": [ ${before},${after} ] }\" > $AZ_SCRIPTS_OUTPUT_PATH;
+                                                                ",
+                                                "cleanupPreference": "Always",
+                                                "retentionInterval": "PT1H"
+                                            }
+                                        }
+                                    ],
+                                    "outputs": {
+                                        "policyDefinitionReferenceId": {
+                                            "type": "string",
+                                            "value": "[parameters('policyDefinitionReferenceId')]"
+                                        }
+                                    }
+                            },
+                            "parameters": {
+                                "identityId": {
+                                    "value": "[parameters('identityId')]"
+                                },
+                                "resourceName": {
+                                    "value": "[field('Name')]"
+                                },
+                                "tags": {
+                                    "value": "[field('tags')]"
+                                },
+                                "minimumTlsVersion": {
+                                    "value": "[parameters('minimumTlsVersion')]"
+                                },
+                                "policyDefinitionReferenceId": {
+                                    "value": "[parameters('tagName')]"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

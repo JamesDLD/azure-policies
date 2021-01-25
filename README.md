@@ -47,11 +47,11 @@ You can consult this article [ARM template deployment what-if operation](https:/
 - [[MVP] Storage account public access should be disallowed](https://docs.microsoft.com/en-us/azure/storage/blobs/anonymous-read-access-configure?WT.mc_id=AZ-MVP-5003548)
 - [[MVP] Latest TLS version should be used in your Web App](https://azure.microsoft.com/fr-fr/updates/app-service-and-functions-hosted-apps-can-now-update-tls-versions/?WT.mc_id=DOP-MVP-5003548)
 - [[MVP] Latest TLS version should be used in your API App](https://azure.microsoft.com/fr-fr/updates/app-service-and-functions-hosted-apps-can-now-update-tls-versions/?WT.mc_id=DOP-MVP-5003548)
-- [Latest TLS version should be used in your Function App](https://azure.microsoft.com/fr-fr/updates/app-service-and-functions-hosted-apps-can-now-update-tls-versions/?WT.mc_id=DOP-MVP-5003548)
+- [[MVP] Latest TLS version should be used in your Function App](https://azure.microsoft.com/fr-fr/updates/app-service-and-functions-hosted-apps-can-now-update-tls-versions/?WT.mc_id=DOP-MVP-5003548)
 
 ## [MVP] Backup Guidelines
-- [ [MVP] Key vaults should have soft delete enabled](https://docs.microsoft.com/en-us/azure/key-vault/general/key-vault-recovery?WT.mc_id=AZ-MVP-5003548)
-- [ [MVP] Storage Accounts Blob should have soft delete enabled](https://docs.microsoft.com/en-us/azure/storage/blobs/soft-delete-blob-overview?WT.mc_id=AZ-MVP-5003548)
+- [[MVP] Key vaults should have soft delete enabled](https://docs.microsoft.com/en-us/azure/key-vault/general/key-vault-recovery?WT.mc_id=AZ-MVP-5003548)
+- [[MVP] Storage Accounts Blob should have soft delete enabled](https://docs.microsoft.com/en-us/azure/storage/blobs/soft-delete-blob-overview?WT.mc_id=AZ-MVP-5003548)
 - [Azure Backup should be enabled for Virtual Machines](https://docs.microsoft.com/en-us/azure/backup/policy-reference?WT.mc_id=AZ-MVP-5003548)
 
 # How to
