@@ -147,6 +147,18 @@
                         "value": "[parameters('identityId')]"
                     }
                 }
+            },
+            {
+                "policyDefinitionReferenceId": "_MVP_Latest_TLS_version_should_be_used_in_your_Web_App",
+                "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/core/providers/Microsoft.Authorization/policyDefinitions/42b5d980-d241-4aac-91fb-eb46fbaad05b",
+                "parameters": {
+                    "effect": {
+                        "value": "[parameters('effect')]"
+                    },
+                    "identityId": {
+                        "value": "[parameters('identityId')]"
+                    }
+                }
             }
         ]
     }
