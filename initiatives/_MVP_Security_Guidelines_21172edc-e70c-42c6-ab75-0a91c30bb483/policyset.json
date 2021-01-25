@@ -135,6 +135,18 @@
                         "value": "[parameters('identityId')]"
                     }
                 }
+            },
+            {
+                "policyDefinitionReferenceId": "_MVP_Storage_account_public_access_should_be_disallowed",
+                "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/core/providers/Microsoft.Authorization/policyDefinitions/7b926092-085e-4630-894f-3e74e52a1265",
+                "parameters": {
+                    "effect": {
+                        "value": "[parameters('effect')]"
+                    },
+                    "identityId": {
+                        "value": "[parameters('identityId')]"
+                    }
+                }
             }
         ]
     }
