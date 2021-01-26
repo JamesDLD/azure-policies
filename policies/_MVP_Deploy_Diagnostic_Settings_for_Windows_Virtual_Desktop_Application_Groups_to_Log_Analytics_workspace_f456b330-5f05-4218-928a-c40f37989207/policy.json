@@ -94,6 +94,28 @@
                             {
                                 "field": "Microsoft.Insights/diagnosticSettings/workspaceId",
                                 "equals": "[parameters('logAnalytics')]"
+                            },
+                            {
+                                "count": {
+                                    "field": "Microsoft.Insights/diagnosticSettings/logs[*]",
+                                    "where": {
+                                        "allof": [
+                                            {
+                                                "field": "Microsoft.Insights/diagnosticSettings/logs[*].Category",
+                                                "in": [
+                                                    "Checkpoint",
+                                                    "Error",
+                                                    "Management"
+                                                ]
+                                            },
+                                            {
+                                                "field": "Microsoft.Insights/diagnosticSettings/logs[*].Enabled",
+                                                "equals": "[parameters('logsEnabled')]"
+                                            }
+                                        ]
+                                    }
+                                },
+                                "Equals": 3
                             }
                         ]
                     },

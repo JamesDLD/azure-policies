@@ -80,6 +80,10 @@
                             {
                                 "field": "Microsoft.Insights/components/IngestionMode",
                                 "equals": "LogAnalytics"
+                            },
+                            {
+                                "field": "Microsoft.Insights/components/WorkspaceResourceId",
+                                "equals": "[parameters('logAnalytics')]"
                             }
                         ]
                     },
