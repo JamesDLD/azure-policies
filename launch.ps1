@@ -8,16 +8,16 @@ $AzRoleDefinitions = @()
 $Scopes = @()
 $PowerShellModules = @(
   @{ 
-    Name = "Az.Accounts"
-    MinimumVersion ="2.2.3"
+    Name           = "Az.Accounts"
+    MinimumVersion = "2.2.3"
   },
   @{ 
-    Name = "Az.Resources"
-    MinimumVersion ="2.4.0"
+    Name           = "Az.Resources"
+    MinimumVersion = "2.4.0"
   }
   @{ 
-    Name = "Az.PolicyInsights"
-    MinimumVersion ="1.3.1"
+    Name           = "Az.PolicyInsights"
+    MinimumVersion = "1.3.1"
   }
 )
 
@@ -25,10 +25,9 @@ $PowerShellModules = @(
 #                                 Pre-requisite
 ################################################################################
 
-ForEach ($PowerShellModule in $PowerShellModules)
-{
-    Write-host "Importing Module $($PowerShellModule.Name) with MinimumVersion $($PowerShellModule.MinimumVersion)"
-    Import-Module -Name $($PowerShellModule.Name) -MinimumVersion $($PowerShellModule.MinimumVersion) -ErrorAction Stop
+ForEach ($PowerShellModule in $PowerShellModules) {
+  Write-host "Importing Module $($PowerShellModule.Name) with MinimumVersion $($PowerShellModule.MinimumVersion)"
+  Import-Module -Name $($PowerShellModule.Name) -MinimumVersion $($PowerShellModule.MinimumVersion) -ErrorAction Stop
 }
 
 ################################################################################

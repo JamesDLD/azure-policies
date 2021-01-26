@@ -192,7 +192,7 @@
                                     "value": "[field('Name')]"
                                 },
                                 "tags": {
-                                    "value": "[field('tags')]"
+                                    "value": "[if(empty(field('tags')),createObject('lastTargetResourceName', field('Name')),field('tags'))]"
                                 },
                                 "logAnalytics": {
                                     "value": "[parameters('logAnalytics')]"

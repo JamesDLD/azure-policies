@@ -195,7 +195,7 @@
                                     "value": "[parameters('blobDeleteRetentionDays')]"
                                 },
                                 "tags": {
-                                    "value": "[field('tags')]"
+                                    "value": "[if(empty(field('tags')),createObject('lastTargetResourceName', field('Name')),field('tags'))]"
                                 },
                                 "policyDefinitionReferenceId": {
                                     "value": "[parameters('tagName')]"

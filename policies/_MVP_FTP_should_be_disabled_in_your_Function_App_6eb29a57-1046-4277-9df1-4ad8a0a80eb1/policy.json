@@ -84,63 +84,62 @@
                         "properties": {
                             "mode": "incremental",
                             "template": {
-                                    "$schema": "http://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                                    "contentVersion": "1.0.0.0",
-                                    "parameters": {
-                                        "identityId": {
-                                            "type": "string",
-                                            "metadata": {
-                                                "description": "Specifies the ID of the user-assigned managed identity used for deployment scripts in ARM templates."
-                                            }
-                                        },
-                                        "resourceName": {
-                                            "type": "string"
-                                        },
-                                        "tags": {
-                                            "type": "object",
-                                            "defaultValue": {
-                                                "lastTargetResourceName": "[parameters('resourceName')]"
-                                            }
-                                        },
-                                        "utcValue": {
-                                            "type": "string",
-                                            "defaultValue": "[utcNow()]"
-                                        },
-                                        "policyDefinitionReferenceId": {
-                                            "type": "string"
+                                "$schema": "http://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                                "contentVersion": "1.0.0.0",
+                                "parameters": {
+                                    "identityId": {
+                                        "type": "string",
+                                        "metadata": {
+                                            "description": "Specifies the ID of the user-assigned managed identity used for deployment scripts in ARM templates."
                                         }
                                     },
-                                    "variables": {
-                                        "additional_tags": {
-                                            "lastTargetResourceName": "[parameters('resourceName')]",
-                                            "_MVP_Deploy_Diagnostic_Settings_for_Storage_Accounts_to_Log_Analytics_workspace": "exclude",
-                                            "_MVP_Latest_TLS_version_should_be_used_in_your_Storage_Accounts": "exclude",
-                                            "_MVP_Secure_transfer_to_storage_accounts_should_be_enabled": "exclude",
-                                            "_MVP_Storage_account_public_access_should_be_disallowed": "exclude",
-                                            "_MVP_Storage_Accounts_Blob_should_have_soft_delete_enabled": "exclude"
+                                    "resourceName": {
+                                        "type": "string"
+                                    },
+                                    "tags": {
+                                        "type": "object",
+                                        "defaultValue": {
+                                            "lastTargetResourceName": "[parameters('resourceName')]"
                                         }
                                     },
-                                    "resources": [
-                                        {
-                                            "type": "Microsoft.Resources/deploymentScripts",
-                                            "apiVersion": "2020-10-01",
-                                            "tags": "[union(variables('additional_tags'),parameters('tags'))]",
-                                            "name": "[concat('policy_ftpsStateDisabled_',parameters('resourceName'))]",
-                                            "location": "[resourceGroup().location]",
-                                            "identity": {
-                                                "type": "UserAssigned",
-                                                "userAssignedIdentities": {
-                                                    "[parameters('identityId')]": {
-                                                    }
-                                                }
-                                            },
-                                            "kind": "AzureCLI",
-                                            "properties": {
-                                                "forceUpdateTag": "[parameters('utcValue')]",
-                                                "AzCliVersion": "2.15.0",
-                                                "timeout": "PT30M",
-                                                "arguments": "[format('{0} {1}', parameters('resourceName'), resourceGroup().name)]",
-                                                "scriptContent": " 
+                                    "utcValue": {
+                                        "type": "string",
+                                        "defaultValue": "[utcNow()]"
+                                    },
+                                    "policyDefinitionReferenceId": {
+                                        "type": "string"
+                                    }
+                                },
+                                "variables": {
+                                    "additional_tags": {
+                                        "lastTargetResourceName": "[parameters('resourceName')]",
+                                        "_MVP_Deploy_Diagnostic_Settings_for_Storage_Accounts_to_Log_Analytics_workspace": "exclude",
+                                        "_MVP_Latest_TLS_version_should_be_used_in_your_Storage_Accounts": "exclude",
+                                        "_MVP_Secure_transfer_to_storage_accounts_should_be_enabled": "exclude",
+                                        "_MVP_Storage_account_public_access_should_be_disallowed": "exclude",
+                                        "_MVP_Storage_Accounts_Blob_should_have_soft_delete_enabled": "exclude"
+                                    }
+                                },
+                                "resources": [
+                                    {
+                                        "type": "Microsoft.Resources/deploymentScripts",
+                                        "apiVersion": "2020-10-01",
+                                        "tags": "[union(variables('additional_tags'),parameters('tags'))]",
+                                        "name": "[concat('policy_ftpsStateDisabled_',parameters('resourceName'))]",
+                                        "location": "[resourceGroup().location]",
+                                        "identity": {
+                                            "type": "UserAssigned",
+                                            "userAssignedIdentities": {
+                                                "[parameters('identityId')]": {}
+                                            }
+                                        },
+                                        "kind": "AzureCLI",
+                                        "properties": {
+                                            "forceUpdateTag": "[parameters('utcValue')]",
+                                            "AzCliVersion": "2.15.0",
+                                            "timeout": "PT30M",
+                                            "arguments": "[format('{0} {1}', parameters('resourceName'), resourceGroup().name)]",
+                                            "scriptContent": " 
                                                 #Action
                                                 before=$(az functionapp config show -n $1 -g $2 -o json);
                                                 
@@ -151,16 +150,16 @@
                                                 echo \"{ \"before_after\": [ ${before},${after} ] }\" > $AZ_SCRIPTS_OUTPUT_PATH;
                                                                 ",
                                                 "cleanupPreference": "Always",
-                                                "retentionInterval": "PT1H"
-                                            }
-                                        }
-                                    ],
-                                    "outputs": {
-                                        "policyDefinitionReferenceId": {
-                                            "type": "string",
-                                            "value": "[parameters('policyDefinitionReferenceId')]"
+                                            "retentionInterval": "PT1H"
                                         }
                                     }
+                                ],
+                                "outputs": {
+                                    "policyDefinitionReferenceId": {
+                                        "type": "string",
+                                        "value": "[parameters('policyDefinitionReferenceId')]"
+                                    }
+                                }
                             },
                             "parameters": {
                                 "identityId": {
@@ -170,7 +169,7 @@
                                     "value": "[field('Name')]"
                                 },
                                 "tags": {
-                                    "value": "[field('tags')]"
+                                    "value": "[if(empty(field('tags')),createObject('lastTargetResourceName', field('Name')),field('tags'))]"
                                 },
                                 "policyDefinitionReferenceId": {
                                     "value": "[parameters('tagName')]"
