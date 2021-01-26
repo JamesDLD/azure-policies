@@ -62,6 +62,10 @@
                         "equals": "Microsoft.Storage/storageAccounts"
                     },
                     {
+                        "field": "Microsoft.Storage/storageAccounts/enableBlobEncryption",
+                        "exists": "true"
+                    },
+                    {
                         "not": {
                             "field": "Microsoft.Storage/storageAccounts/isHnsEnabled",
                             "equals": "true"
