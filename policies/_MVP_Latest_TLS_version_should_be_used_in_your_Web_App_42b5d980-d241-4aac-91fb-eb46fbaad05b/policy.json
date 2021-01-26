@@ -178,6 +178,14 @@
                                         }
                                     ],
                                     "outputs": {
+                                        "action1": {
+                                            "value": "[reference(parameters('deploymentScriptName')).outputs.action1]",
+                                            "type": "string"
+                                        },
+                                        "end": {
+                                            "value": "[reference(parameters('deploymentScriptName')).outputs.end]",
+                                            "type": "string"
+                                        },
                                         "policyDefinitionReferenceId": {
                                             "type": "string",
                                             "value": "[parameters('policyDefinitionReferenceId')]"

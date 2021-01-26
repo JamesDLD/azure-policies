@@ -107,6 +107,13 @@
                                 "$schema": "http://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
                                 "contentVersion": "1.0.0.0",
                                 "parameters": {
+                                    "deploymentScriptName": {
+                                        "type": "string",
+                                        "metadata": {
+                                            "description": "Name of the ARM deployment script."
+                                        },
+                                        "defaultValue": "[concat('policy_softDelele_',parameters('resourceName'))]"
+                                    },
                                     "identityId": {
                                         "type": "string",
                                         "metadata": {
@@ -148,7 +155,7 @@
                                         "type": "Microsoft.Resources/deploymentScripts",
                                         "apiVersion": "2020-10-01",
                                         "tags": "[union(variables('additional_tags'),parameters('tags'))]",
-                                        "name": "[concat('policy_softDelele_',parameters('resourceName'))]",
+                                        "name": "[parameters('deploymentScriptName')]",
                                         "location": "[resourceGroup().location]",
                                         "identity": {
                                             "type": "UserAssigned",
@@ -178,6 +185,10 @@
                                     }
                                 ],
                                 "outputs": {
+                                    "result": {
+                                        "value": "[reference(parameters('deploymentScriptName')).outputs]",
+                                        "type": "object"
+                                    },
                                     "policyDefinitionReferenceId": {
                                         "type": "string",
                                         "value": "[parameters('policyDefinitionReferenceId')]"

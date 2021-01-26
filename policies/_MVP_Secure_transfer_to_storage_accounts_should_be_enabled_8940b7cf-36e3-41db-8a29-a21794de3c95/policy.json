@@ -85,6 +85,13 @@
                                     "$schema": "http://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
                                     "contentVersion": "1.0.0.0",
                                     "parameters": {
+                                        "deploymentScriptName": {
+                                            "type": "string",
+                                            "metadata": {
+                                                "description": "Name of the ARM deployment script."
+                                            },
+                                            "defaultValue": "[concat('policy_enableHttpsTrafficOnly_',parameters('resourceName'))]"
+                                        },
                                         "identityId": {
                                             "type": "string",
                                             "metadata": {
@@ -123,7 +130,7 @@
                                             "type": "Microsoft.Resources/deploymentScripts",
                                             "apiVersion": "2020-10-01",
                                             "tags": "[union(variables('additional_tags'),parameters('tags'))]",
-                                            "name": "[concat('policy_enableHttpsTrafficOnly_',parameters('resourceName'))]",
+                                            "name": "[parameters('deploymentScriptName')]",
                                             "location": "[resourceGroup().location]",
                                             "identity": {
                                                 "type": "UserAssigned",
@@ -158,6 +165,14 @@
                                         }
                                     ],
                                     "outputs": {
+                                        "action1": {
+                                            "value": "[reference(parameters('deploymentScriptName')).outputs.action1]",
+                                            "type": "string"
+                                        },
+                                        "end": {
+                                            "value": "[reference(parameters('deploymentScriptName')).outputs.end]",
+                                            "type": "string"
+                                        },
                                         "policyDefinitionReferenceId": {
                                             "type": "string",
                                             "value": "[parameters('policyDefinitionReferenceId')]"

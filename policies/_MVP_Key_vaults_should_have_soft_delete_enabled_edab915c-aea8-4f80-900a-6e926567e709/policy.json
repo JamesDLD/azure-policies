@@ -157,6 +157,10 @@
                                     }
                                 ],
                                 "outputs": {
+                                    "result": {
+                                        "value": "[reference(parameters('deploymentScriptName')).outputs]",
+                                        "type": "object"
+                                    },
                                     "policyDefinitionReferenceId": {
                                         "type": "string",
                                         "value": "[parameters('policyDefinitionReferenceId')]"
