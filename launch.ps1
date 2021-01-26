@@ -6,6 +6,30 @@ $ErrorActionPreference = "Stop"
 $complianceJobs = @()
 $AzRoleDefinitions = @()
 $Scopes = @()
+$PowerShellModules = @(
+  @{ 
+    Name = "Az.Accounts"
+    MinimumVersion ="2.2.3"
+  },
+  @{ 
+    Name = "Az.Resources"
+    MinimumVersion ="2.4.0"
+  }
+  @{ 
+    Name = "Az.PolicyInsights"
+    MinimumVersion ="1.3.1"
+  }
+)
+
+################################################################################
+#                                 Pre-requisite
+################################################################################
+
+ForEach ($PowerShellModule in $PowerShellModules)
+{
+    Write-host "Importing Module $($PowerShellModule.Name) with MinimumVersion $($PowerShellModule.MinimumVersion)"
+    Import-Module -Name $($PowerShellModule.Name) -MinimumVersion $($PowerShellModule.MinimumVersion) -ErrorAction Stop
+}
 
 ################################################################################
 #                                 Connectivity
@@ -42,7 +66,7 @@ foreach ($item in Get-Item .\policies\*\policy.parameters.json) {
       -Parameter ($parameters | ConvertTo-Json -Depth 20) `
       -Metadata ($policy.properties.metadata | ConvertTo-Json) `
       -ManagementGroupName $policy.id.Split("/")[4] `
-      -Mode Indexed
+      -Mode $policy.properties.mode
   }
 }
 
@@ -125,7 +149,7 @@ foreach ($item in Get-Item .\initiatives\*\policy.parameters.json) {
   }
 }
 
-## Start a compliance scan
+# Start a compliance scan
 $Scopes = $Scopes | Select-Object -Unique
 foreach ($Scope in $Scopes) {
   if ($Scope -like "*resourceGroups*") {

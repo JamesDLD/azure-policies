@@ -165,6 +165,42 @@
                         "value": "[parameters('identityId')]"
                     }
                 }
+            },
+            {
+                "policyDefinitionReferenceId": "_MVP_FTP_should_be_disabled_in_your_API_App",
+                "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/core/providers/Microsoft.Authorization/policyDefinitions/fea97454-8427-4b6f-bc9d-db6dd41e0862",
+                "parameters": {
+                    "effect": {
+                        "value": "[parameters('effect')]"
+                    },
+                    "identityId": {
+                        "value": "[parameters('identityId')]"
+                    }
+                }
+            },
+            {
+                "policyDefinitionReferenceId": "_MVP_FTP_should_be_disable_in_your_Function_App",
+                "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/core/providers/Microsoft.Authorization/policyDefinitions/6eb29a57-1046-4277-9df1-4ad8a0a80eb1",
+                "parameters": {
+                    "effect": {
+                        "value": "[parameters('effect')]"
+                    },
+                    "identityId": {
+                        "value": "[parameters('identityId')]"
+                    }
+                }
+            },
+            {
+                "policyDefinitionReferenceId": "_MVP_FTP_should_be_disabled_in_your_Web_App",
+                "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/core/providers/Microsoft.Authorization/policyDefinitions/278d0c76-3d3b-452d-9b8a-724ba7a6b43e",
+                "parameters": {
+                    "effect": {
+                        "value": "[parameters('effect')]"
+                    },
+                    "identityId": {
+                        "value": "[parameters('identityId')]"
+                    }
+                }
             }
         ]
     }

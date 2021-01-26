@@ -7,7 +7,7 @@
         "policyType": "Custom",
         "mode": "Indexed",
         "metadata": {
-            "category": "Storage"
+            "category": "App Service"
         },
         "parameters": {
             "effect": {

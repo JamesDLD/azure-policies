@@ -1,9 +1,9 @@
 {
-    "id": "/providers/Microsoft.Management/managementGroups/core/providers/Microsoft.Authorization/policyDefinitions/42b5d980-d241-4aac-91fb-eb46fbaad05b",
+    "id": "/providers/Microsoft.Management/managementGroups/core/providers/Microsoft.Authorization/policyDefinitions/278d0c76-3d3b-452d-9b8a-724ba7a6b43e",
     "type": "Microsoft.Authorization/policyDefinitions",
-    "name": "42b5d980-d241-4aac-91fb-eb46fbaad05b",
+    "name": "278d0c76-3d3b-452d-9b8a-724ba7a6b43e",
     "properties": {
-        "displayName": "[MVP] Latest TLS version should be used in your Web App",
+        "displayName": "[MVP] FTP should be disabled in your Web App",
         "policyType": "Custom",
         "mode": "Indexed",
         "metadata": {
@@ -29,7 +29,7 @@
                     "displayName": "Exclusion Tag Name",
                     "description": "Name of the tag to use for excluding vaults from this policy. This should be used along with the Exclusion Tag Value parameter."
                 },
-                "defaultValue": "_MVP_Latest_TLS_version_should_be_used_in_your_Web_App"
+                "defaultValue": "_MVP_FTP_should_be_disabled_in_your_Web_App"
             },
             "tagValue": {
                 "type": "string",
@@ -38,16 +38,6 @@
                     "description": "Value of the tag to use for excluding vaults from this policy. This should be used along with the Exclusion Tag Name parameter."
                 },
                 "defaultValue": "exclude"
-            },
-            "minimumTlsVersion": {
-                "type": "string",
-                "metadata": {
-                    "description": "Specifies the minimum Tls Version."
-                },
-                "allowedValues": [
-                    "1.2"
-                ],
-                "defaultValue": "1.2"
             },
             "identityId": {
                 "type": "string",
@@ -81,8 +71,10 @@
                     "type": "Microsoft.Web/sites/config",
                     "name": "web",
                     "existenceCondition": {
-                      "field": "Microsoft.Web/sites/config/minTlsVersion",
-                      "equals": "[parameters('minimumTlsVersion')]"
+                        "field": "Microsoft.Web/sites/config/ftpsState",
+                        "in": [
+                          "Disabled"
+                        ]
                     },
                     "roleDefinitionIds": [
                         "/providers/microsoft.authorization/roleDefinitions/de139f84-1756-47ae-9be6-808fbbe84772",
@@ -110,15 +102,6 @@
                                                 "lastTargetResourceName": "[parameters('resourceName')]"
                                             }
                                         },
-                                        "minimumTlsVersion": {
-                                            "type": "string",
-                                            "metadata": {
-                                                "description": "Specifies the minimum Tls Version."
-                                            },
-                                            "allowedValues": [
-                                                "1.2"
-                                            ]
-                                        },
                                         "utcValue": {
                                             "type": "string",
                                             "defaultValue": "[utcNow()]"
@@ -142,7 +125,7 @@
                                             "type": "Microsoft.Resources/deploymentScripts",
                                             "apiVersion": "2020-10-01",
                                             "tags": "[union(variables('additional_tags'),parameters('tags'))]",
-                                            "name": "[concat('policy_minimumTlsVersion_',parameters('resourceName'))]",
+                                            "name": "[concat('policy_ftpsStateDisabled_',parameters('resourceName'))]",
                                             "location": "[resourceGroup().location]",
                                             "identity": {
                                                 "type": "UserAssigned",
@@ -156,20 +139,19 @@
                                                 "forceUpdateTag": "[parameters('utcValue')]",
                                                 "azPowerShellVersion": "5.3",
                                                 "timeout": "PT30M",
-                                                "arguments": "[format(' -Name {0} -ResourceGroupName {1} -minimumTlsVersion {2}', parameters('resourceName'), resourceGroup().name, parameters('minimumTlsVersion'))]",
+                                                "arguments": "[format(' -Name {0} -ResourceGroupName {1}', parameters('resourceName'), resourceGroup().name)]",
                                                 "scriptContent": "
                                                             param(
                                                                   [string] [Parameter(Mandatory = $true)] $Name,
-                                                                  [string] [Parameter(Mandatory = $true)] $ResourceGroupName,
-                                                                  [string] [Parameter(Mandatory = $true)] $minimumTlsVersion
+                                                                  [string] [Parameter(Mandatory = $true)] $ResourceGroupName
                                                               )
                                                               
                                                               $ErrorActionPreference = 'Stop'
                                                               $DeploymentScriptOutputs = @{}
                                 
-                                                              $output = 'Setting the MinimumTlsVersion to : {0} on the App Service : {1} located in the Resource Group : {2}.' -f $MinimumTlsVersion,$Name,$ResourceGroupName
+                                                              $output = 'Disabling FTP on Web App Service : {1} located in the Resource Group : {2}.' -f $Name,$ResourceGroupName
                                                               $DeploymentScriptOutputs['action1'] = $output
-                                                              Set-AzWebApp -ResourceGroupName $ResourceGroupName -Name $Name -MinTlsVersion $minimumTlsVersion
+                                                              Set-AzWebApp -ResourceGroupName $ResourceGroupName -Name $Name -FtpsState Disabled
                                                               $DeploymentScriptOutputs['end'] = 'End of the operation'
                                                                 ",
                                                 "cleanupPreference": "Always",
@@ -193,9 +175,6 @@
                                 },
                                 "tags": {
                                     "value": "[field('tags')]"
-                                },
-                                "minimumTlsVersion": {
-                                    "value": "[parameters('minimumTlsVersion')]"
                                 },
                                 "policyDefinitionReferenceId": {
                                     "value": "[parameters('tagName')]"
