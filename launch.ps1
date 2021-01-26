@@ -85,13 +85,26 @@ foreach ($item in Get-Item .\initiatives\*\policy.parameters.json) {
     $assign = (Get-Content -Path $item_assign.FullName) | ConvertFrom-Json
 
     ## Assign the Initiative Policy
-    $PolicyAssignment = New-AzPolicyAssignment -Name $assign.name `
-      -DisplayName $assign.properties.displayName `
-      -PolicySetDefinition $initiativePolicy `
-      -Scope $assign.properties.scope `
-      -AssignIdentity `
-      -Location $assign.location `
-      -PolicyParameter ($assign.properties.parameters | ConvertTo-Json) #      -NotScope $assign.properties.notScopes `
+    if ($assign.properties.notScopes) {
+      $PolicyAssignment = New-AzPolicyAssignment -Name $assign.name `
+        -DisplayName $assign.properties.displayName `
+        -PolicySetDefinition $initiativePolicy `
+        -Scope $assign.properties.scope `
+        -NotScope $assign.properties.notScopes `
+        -AssignIdentity `
+        -Location $assign.location `
+        -PolicyParameter ($assign.properties.parameters | ConvertTo-Json) 
+    }
+    else {
+      $PolicyAssignment = New-AzPolicyAssignment -Name $assign.name `
+        -DisplayName $assign.properties.displayName `
+        -PolicySetDefinition $initiativePolicy `
+        -Scope $assign.properties.scope `
+        -AssignIdentity `
+        -Location $assign.location `
+        -PolicyParameter ($assign.properties.parameters | ConvertTo-Json)
+    }
+
 
     ## Extract the ObjectID of the Policy Assignment Managed Identity
     $objectID = [GUID]($PolicyAssignment.Identity.principalId) #[GUID]($assign.identity.principalId) #
