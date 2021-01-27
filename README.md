@@ -2,6 +2,7 @@
 
 # Content
 Share Azure Policies with the community.
+Published in the Blog post [An Azure Policy journey](https://medium.com/microsoftazure/an-azure-policy-journey-7bb53b41c43d).
 
 The approach is to use [built-in](https://docs.microsoft.com/en-us/azure/governance/policy/samples/built-in-policies?WT.mc_id=AZ-MVP-5003548) Azure policies whenever they exist, otherwise we use custom policies with the trigram "MVP".
 
