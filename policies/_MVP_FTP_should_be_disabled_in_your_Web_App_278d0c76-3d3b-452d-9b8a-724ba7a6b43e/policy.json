@@ -137,43 +137,34 @@
                                             "identity": {
                                                 "type": "UserAssigned",
                                                 "userAssignedIdentities": {
-                                                    "[parameters('identityId')]": {
-                                                    }
+                                                    "[parameters('identityId')]": {}
                                                 }
                                             },
-                                            "kind": "AzurePowerShell",
+                                            "kind": "AzureCLI",
                                             "properties": {
                                                 "forceUpdateTag": "[parameters('utcValue')]",
-                                                "azPowerShellVersion": "5.3",
+                                                "AzCliVersion": "2.15.0",
                                                 "timeout": "PT30M",
-                                                "arguments": "[format(' -Name {0} -ResourceGroupName {1}', parameters('resourceName'), resourceGroup().name)]",
-                                                "scriptContent": "
-                                                            param(
-                                                                  [string] [Parameter(Mandatory = $true)] $Name,
-                                                                  [string] [Parameter(Mandatory = $true)] $ResourceGroupName
-                                                              )
-                                                              
-                                                              $ErrorActionPreference = 'Stop'
-                                                              $DeploymentScriptOutputs = @{}
-                                
-                                                              $output = 'Disabling FTP on Web App Service : {1} located in the Resource Group : {2}.' -f $Name,$ResourceGroupName
-                                                              $DeploymentScriptOutputs['action1'] = $output
-                                                              Set-AzWebApp -ResourceGroupName $ResourceGroupName -Name $Name -FtpsState Disabled
-                                                              $DeploymentScriptOutputs['end'] = 'End of the operation'
-                                                                ",
-                                                "cleanupPreference": "Always",
+                                                "arguments": "[format('{0} {1}', parameters('resourceName'), resourceGroup().name)]",
+                                                "scriptContent": " 
+                                                    #Action
+                                                    before=$(az webapp config show -n $1 -g $2 -o json);
+                                                    
+                                                    echo \"Disabling FTP on Web App : $1 located in the resource group : $2\"; 
+                                                    result=$(az webapp config set -n $1 -g $2 --ftps-state Disabled); 
+                                                    
+                                                    after=$(az webapp config show -n $1 -g $2 -o json);
+                                                    echo \"{ \"before_after\": [ ${before},${after} ] }\" > $AZ_SCRIPTS_OUTPUT_PATH;
+                                                                    ",
+                                                    "cleanupPreference": "Always",
                                                 "retentionInterval": "PT1H"
                                             }
                                         }
                                     ],
                                     "outputs": {
-                                        "action1": {
-                                            "value": "[reference(parameters('deploymentScriptName')).outputs.action1]",
-                                            "type": "string"
-                                        },
-                                        "end": {
-                                            "value": "[reference(parameters('deploymentScriptName')).outputs.end]",
-                                            "type": "string"
+                                        "result": {
+                                            "value": "[reference(parameters('deploymentScriptName')).outputs]",
+                                            "type": "object"
                                         },
                                         "policyDefinitionReferenceId": {
                                             "type": "string",
