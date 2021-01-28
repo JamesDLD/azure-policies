@@ -76,23 +76,6 @@
                     "description": "A string with the storage id for the flowlogs to be sent to. It will be used for deployment purposes only. Make sure this storage account is located in the same region as the NSG. The format must be: '/subscriptions/{subscription id}/resourceGroups/{resourceGroup name}/providers/Microsoft.Storage/storageAccounts/{storage account name}",
                     "assignPermissions": "true"
                 }
-            },
-            "networkWatcherRG": {
-                "type": "String",
-                "metadata": {
-                    "displayName": "Network Watchers RG",
-                    "description": "The name of the resource group where the flowLog resources will be created. This will be used only if a deployment is required. This is the resource group where the Network Watchers are located.",
-                    "strongType": "existingResourceGroups"
-                },
-                "defaultValue": "NetworkWatcherRG"
-            },
-            "networkWatcherName": {
-                "type": "String",
-                "metadata": {
-                    "displayName": "Network Watcher name",
-                    "description": "The name of the network watcher under which the flowLog resources will be created. Make sure it belongs to the same region as the NSG."
-                },
-                "defaultValue": "defaultNetworkWatcherName"
             }
         },
         "policyDefinitions": [
