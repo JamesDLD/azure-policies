@@ -68,6 +68,31 @@
                     "False"
                 ],
                 "defaultValue": "True"
+            },
+            "storageId": {
+                "type": "String",
+                "metadata": {
+                    "displayName": "Storage id",
+                    "description": "A string with the storage id for the flowlogs to be sent to. It will be used for deployment purposes only. Make sure this storage account is located in the same region as the NSG. The format must be: '/subscriptions/{subscription id}/resourceGroups/{resourceGroup name}/providers/Microsoft.Storage/storageAccounts/{storage account name}",
+                    "assignPermissions": "true"
+                }
+            },
+            "networkWatcherRG": {
+                "type": "String",
+                "metadata": {
+                    "displayName": "Network Watchers RG",
+                    "description": "The name of the resource group where the flowLog resources will be created. This will be used only if a deployment is required. This is the resource group where the Network Watchers are located.",
+                    "strongType": "existingResourceGroups"
+                },
+                "defaultValue": "NetworkWatcherRG"
+            },
+            "networkWatcherName": {
+                "type": "String",
+                "metadata": {
+                    "displayName": "Network Watcher name",
+                    "description": "The name of the network watcher under which the flowLog resources will be created. Make sure it belongs to the same region as the NSG."
+                },
+                "defaultValue": "defaultNetworkWatcherName"
             }
         },
         "policyDefinitions": [
@@ -201,11 +226,37 @@
                 "policyDefinitionReferenceId": "_MVP_Deploy_Diagnostic_Settings_for_Storage_Accounts_to_Log_Analytics_workspace",
                 "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/core/providers/Microsoft.Authorization/policyDefinitions/95172ee8-5d70-4e05-bd09-5a2b2e3809d2",
                 "parameters": {
+                    "effect": {
+                        "value": "[parameters('effect')]"
+                    },
                     "profileName": {
                         "value": "[parameters('profileName')]"
                     },
                     "logAnalytics": {
                         "value": "[parameters('logAnalytics')]"
+                    }
+                }
+            },
+            {
+                "policyDefinitionReferenceId": "Deploy_network_watcher_when_virtual_networks_are_created",
+                "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/a9b99dd8-06c5-4317-8629-9d86a3c6e7d9",
+                "parameters": {}
+            },
+            {
+                "policyDefinitionReferenceId": "_MVP_Deploy_a_flow_log_resource_and_traffic_analytics_with_target_network_security_group",
+                "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/core/providers/Microsoft.Authorization/policyDefinitions/cd1d2f3c-cbf9-4064-aa90-c55165a2310c",
+                "parameters": {
+                    "effect": {
+                        "value": "[parameters('effect')]"
+                    },
+                    "logAnalytics": {
+                        "value": "[parameters('logAnalytics')]"
+                    },
+                    "storageId": {
+                        "value": "[parameters('storageId')]"
+                    },
+                    "nsgRegion": {
+                        "value": "westeurope"
                     }
                 }
             }

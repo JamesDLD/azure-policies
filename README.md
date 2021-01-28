@@ -2,6 +2,7 @@
 
 # Content
 Share Azure Policies with the community.
+
 Published in the Blog post [An Azure Policy journey](https://medium.com/microsoftazure/an-azure-policy-journey-7bb53b41c43d).
 
 The approach is to use [built-in](https://docs.microsoft.com/en-us/azure/governance/policy/samples/built-in-policies?WT.mc_id=AZ-MVP-5003548) Azure policies whenever they exist, otherwise we use custom policies with the trigram "MVP".
@@ -33,6 +34,8 @@ You can consult this article [ARM template deployment what-if operation](https:/
 ![hlv](./images/hlv.png)
 
 ## [MVP] Monitoring Guidelines
+- [Deploy network watcher when virtual networks are created](https://docs.microsoft.com/en-us/azure/network-watcher/network-watcher-create?WT.mc_id=AZ-MVP-5003548)
+- [[MVP] Deploy a flow log resource and traffic analytics with target network security group](https://docs.microsoft.com/en-us/azure/network-watcher/traffic-analytics#enable-flow-log-settings?WT.mc_id=AZ-MVP-5003548)
 - [[MVP] Deploy Diagnostic Settings for Storage Accounts to Log Analytics workspace](https://docs.microsoft.com/en-us/azure/storage/blobs/monitor-blob-storage?WT.mc_id=AZ-MVP-5003548)
 - [[MVP] Deploy Diagnostic Settings for Azure Databricks](https://docs.microsoft.com/en-us/azure/databricks/administration-guide/account-settings/azure-diagnostic-logs?WT.mc_id=DOP-MVP-5003548)
 - [[MVP] Deploy Workspace-based Application Insights](https://docs.microsoft.com/en-us/azure/azure-monitor/app/convert-classic-resource?WT.mc_id=DOP-MVP-5003548)

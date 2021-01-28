@@ -1,0 +1,267 @@
+{
+    "id": "/providers/Microsoft.Management/managementGroups/core/providers/Microsoft.Authorization/policyDefinitions/cd1d2f3c-cbf9-4064-aa90-c55165a2310c",
+    "type": "Microsoft.Authorization/policyDefinitions",
+    "name": "cd1d2f3c-cbf9-4064-aa90-c55165a2310c",
+    "properties": {
+        "displayName": "[MVP] Deploy a flow log resource and traffic analytics with target network security group",
+        "policyType": "Custom",
+        "mode": "Indexed",
+        "metadata": {
+            "category": "Network"
+        },
+        "parameters": {
+            "effect": {
+                "type": "String",
+                "metadata": {
+                    "displayName": "Effect",
+                    "description": "Enable, disable or audit the execution of the policy"
+                },
+                "allowedValues": [
+                    "DeployIfNotExists",
+                    "Disabled",
+                    "AuditIfNotExists"
+                ],
+                "defaultValue": "DeployIfNotExists"
+            },
+            "tagName": {
+                "type": "string",
+                "metadata": {
+                    "displayName": "Exclusion Tag Name",
+                    "description": "Name of the tag to use for excluding vaults from this policy. This should be used along with the Exclusion Tag Value parameter."
+                },
+                "defaultValue": "_MVP_Deploy_a_flow_log_resource_and_traffic_analytics_with_target_network_security_group"
+            },
+            "tagValue": {
+                "type": "string",
+                "metadata": {
+                    "displayName": "Exclusion Tag Value",
+                    "description": "Value of the tag to use for excluding vaults from this policy. This should be used along with the Exclusion Tag Name parameter."
+                },
+                "defaultValue": "exclude"
+            },
+            "nsgRegion": {
+                "type": "String",
+                "metadata": {
+                    "displayName": "NSG Region",
+                    "description": "This Policy will review NSGs only in the selected region. You can create other assignments to include other regions.",
+                    "strongType": "location"
+                }
+            },
+            "storageId": {
+                "type": "String",
+                "metadata": {
+                    "displayName": "Storage id",
+                    "description": "A string with the storage id for the flowlogs to be sent to. It will be used for deployment purposes only. Make sure this storage account is located in the same region as the NSG. The format must be: '/subscriptions/{subscription id}/resourceGroups/{resourceGroup name}/providers/Microsoft.Storage/storageAccounts/{storage account name}",
+                    "assignPermissions": "true"
+                }
+            },
+            "networkWatcherRG": {
+                "type": "String",
+                "metadata": {
+                    "displayName": "Network Watchers RG",
+                    "description": "The name of the resource group where the flowLog resources will be created. This will be used only if a deployment is required. This is the resource group where the Network Watchers are located.",
+                    "strongType": "existingResourceGroups"
+                },
+                "defaultValue": "NetworkWatcherRG"
+            },
+            "networkWatcherName": {
+                "type": "String",
+                "metadata": {
+                    "displayName": "Network Watcher name",
+                    "description": "The name of the network watcher under which the flowLog resources will be created. Make sure it belongs to the same region as the NSG."
+                },
+                "defaultValue": "defaultNetworkWatcherName"
+            },
+            "logAnalytics": {
+                "type": "String",
+                "metadata": {
+                    "displayName": "Log Analytics workspace",
+                    "description": "Select Log Analytics workspace from dropdown list. If this workspace is outside of the scope of the assignment you must manually grant 'Log Analytics Contributor' permissions (or similar) to the policy assignment's principal ID.",
+                    "strongType": "omsWorkspace",
+                    "assignPermissions": true
+                }
+            },
+            "trafficAnalyticsInterval": {
+                "type": "String",
+                "metadata": {
+                    "displayName": "Traffic Analytics Interval",
+                    "description": "The interval in minutes which would decide how frequently TA service should do flow analytics."
+                },
+                "defaultValue": "10"
+            }
+        },
+        "policyRule": {
+            "if": {
+                "allOf": [
+                    {
+                        "field": "type",
+                        "equals": "Microsoft.Network/networkSecurityGroups"
+                    },
+                    {
+                        "field": "location",
+                        "equals": "[parameters('nsgRegion')]"
+                    },
+                    {
+                        "not": {
+                            "field": "[concat('tags[',parameters('tagName'), ']')]",
+                            "equals": "[parameters('tagValue')]"
+                        }
+                    }
+                ]
+            },
+            "then": {
+                "effect": "[parameters('effect')]",
+                "details": {
+                    "type": "Microsoft.Network/networkWatchers/flowlogs",
+                    "resourceGroupName": "[if(empty(coalesce(field('Microsoft.Network/networkSecurityGroups/flowLogs'))), parameters('networkWatcherRG'), split(first(field('Microsoft.Network/networkSecurityGroups/flowLogs[*].id')), '/')[4])]",
+                    "name": "[if(empty(coalesce(field('Microsoft.Network/networkSecurityGroups/flowLogs[*].id'))), 'null/null', concat(split(first(field('Microsoft.Network/networkSecurityGroups/flowLogs[*].id')), '/')[8], '/', split(first(field('Microsoft.Network/networkSecurityGroups/flowLogs[*].id')), '/')[10]))]",
+                    "existenceCondition": {
+                        "allOf": [
+                            {
+                                "field": "Microsoft.Network/networkWatchers/flowLogs/enabled",
+                                "equals": "true"
+                            },
+                            {
+                                "field": "Microsoft.Network/networkWatchers/flowLogs/storageId",
+                                "equals": "[parameters('storageId')]"
+                            },
+                            {
+                                "field": "Microsoft.Network/networkWatchers/flowLogs/flowAnalyticsConfiguration.networkWatcherFlowAnalyticsConfiguration.enabled",
+                                "equals": "true"
+                            },
+                            {
+                                "field": "Microsoft.Network/networkWatchers/flowLogs/flowAnalyticsConfiguration.networkWatcherFlowAnalyticsConfiguration.workspaceResourceId",
+                                "equals": "[parameters('logAnalytics')]"
+                            },
+                            {
+                                "field": "Microsoft.Network/networkWatchers/flowLogs/flowAnalyticsConfiguration.networkWatcherFlowAnalyticsConfiguration.trafficAnalyticsInterval",
+                                "equals": "[parameters('trafficAnalyticsInterval')]"
+                            }
+                        ]
+                    },
+                    "roleDefinitionIds": [
+                        "/providers/microsoft.authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7",
+                        "/providers/microsoft.authorization/roleDefinitions/92aaf0da-9dab-42b6-94a3-d43ce8d16293"
+                    ],
+                    "deployment": {
+                        "properties": {
+                            "mode": "incremental",
+                            "template": {
+                                "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+                                "contentVersion": "1.0.0.0",
+                                "parameters": {
+                                    "logAnalytics": {
+                                        "type": "string"
+                                    },
+                                    "trafficAnalyticsInterval": {
+                                        "type": "string"
+                                    },
+                                    "storageId": {
+                                        "type": "String"
+                                    },
+                                    "networkWatcherRG": {
+                                        "type": "String"
+                                    },
+                                    "networkWatcherName": {
+                                        "type": "String"
+                                    },
+                                    "flowlogName": {
+                                        "type": "String"
+                                    },
+                                    "location": {
+                                        "type": "String"
+                                    },
+                                    "targetResource": {
+                                        "type": "string"
+                                    },
+                                    "policyDefinitionReferenceId": {
+                                        "type": "string"
+                                    }
+                                },
+                                "variables": {
+                                    "networkWatcherName": "[if(equals(parameters('networkWatcherName'),'defaultNetworkWatcherName'),concat('NetworkWatcher_', parameters('location')),parameters('networkWatcherName'))]"
+                                },
+                                "resources": [
+                                    {
+                                        "type": "Microsoft.Resources/deployments",
+                                        "name": "[concat('flowlogDeployment-', uniqueString(parameters('flowlogName')))]",
+                                        "apiVersion": "2019-10-01",
+                                        "resourceGroup": "[parameters('networkWatcherRG')]",
+                                        "properties": {
+                                            "mode": "incremental",
+                                            "parameters": {},
+                                            "template": {
+                                                "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+                                                "contentVersion": "1.0.0.0",
+                                                "parameters": {},
+                                                "resources": [
+                                                    {
+                                                        "type": "Microsoft.Network/networkWatchers/flowLogs",
+                                                        "name": "[concat(variables('networkWatcherName'), '/', parameters('flowlogName'))]",
+                                                        "apiVersion": "2019-11-01",
+                                                        "location": "[parameters('location')]",
+                                                        "properties": {
+                                                            "targetResourceId": "[parameters('targetResource')]",
+                                                            "storageId": "[parameters('storageId')]",
+                                                            "enabled": "true",
+                                                            "flowAnalyticsConfiguration": {
+                                                                "networkWatcherFlowAnalyticsConfiguration": {
+                                                                    "enabled": true,
+                                                                    "workspaceResourceId": "[parameters('logAnalytics')]",
+                                                                    "trafficAnalyticsInterval": "[parameters('trafficAnalyticsInterval')]"
+                                                                }
+                                                            },
+                                                            "retentionPolicy": {
+                                                                "days": "7",
+                                                                "enabled": "true"
+                                                            }
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    }
+                                ],
+                                "outputs": {
+                                    "policyDefinitionReferenceId": {
+                                        "type": "string",
+                                        "value": "[parameters('policyDefinitionReferenceId')]"
+                                    }
+                                }
+                            },
+                            "parameters": {
+                                "logAnalytics": {
+                                    "value": "[parameters('logAnalytics')]"
+                                },
+                                "trafficAnalyticsInterval": {
+                                    "value": "[parameters('trafficAnalyticsInterval')]"
+                                },
+                                "storageId": {
+                                    "value": "[parameters('storageId')]"
+                                },
+                                "networkWatcherRG": {
+                                    "value": "[if(empty(coalesce(field('Microsoft.Network/networkSecurityGroups/flowLogs'))), parameters('networkWatcherRG'), split(first(field('Microsoft.Network/networkSecurityGroups/flowLogs[*].id')), '/')[4])]"
+                                },
+                                "networkWatcherName": {
+                                    "value": "[if(empty(coalesce(field('Microsoft.Network/networkSecurityGroups/flowLogs'))), parameters('networkWatcherName'), split(first(field('Microsoft.Network/networkSecurityGroups/flowLogs[*].id')), '/')[8])]"
+                                },
+                                "flowlogName": {
+                                    "value": "[if(empty(coalesce(field('Microsoft.Network/networkSecurityGroups/flowLogs'))), concat(field('name'), '-', resourceGroup().name, '-', 'flowlog'), split(first(field('Microsoft.Network/networkSecurityGroups/flowLogs[*].id')), '/')[10])]"
+                                },
+                                "location": {
+                                    "value": "[field('location')]"
+                                },
+                                "targetResource": {
+                                    "value": "[concat(resourceGroup().id, '/providers/Microsoft.Network/networkSecurityGroups/', field('name'))]"
+                                },
+                                "policyDefinitionReferenceId": {
+                                    "value": "[parameters('tagName')]"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
