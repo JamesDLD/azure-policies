@@ -55,6 +55,7 @@ You can consult this article [ARM template deployment what-if operation](https:/
 - [[MVP] FTP should be disable in your Function App](https://docs.microsoft.com/en-us/azure/app-service/deploy-ftp?WT.mc_id=AZ-MVP-5003548#enforce-ftps)
 - [[MVP] Latest TLS version should be used in your API App](https://azure.microsoft.com/fr-fr/updates/app-service-and-functions-hosted-apps-can-now-update-tls-versions/?WT.mc_id=DOP-MVP-5003548)
 - [[MVP] FTP should be disable in your API App](https://docs.microsoft.com/en-us/azure/app-service/deploy-ftp?WT.mc_id=AZ-MVP-5003548#enforce-ftps)
+- [Deploy SQL DB transparent data encryption](https://docs.microsoft.com/en-us/azure/azure-sql/database/transparent-data-encryption-tde-overview?WT.mc_id=DP-MVP-5003548)
 
 
 ## [MVP] Backup Guidelines
