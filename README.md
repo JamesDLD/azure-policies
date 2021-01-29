@@ -58,6 +58,7 @@ You can consult this article [ARM template deployment what-if operation](https:/
 - [[MVP] FTP should be disable in your API App](https://docs.microsoft.com/en-us/azure/app-service/deploy-ftp?WT.mc_id=AZ-MVP-5003548#enforce-ftps)
 - [Deploy SQL DB transparent data encryption](https://docs.microsoft.com/en-us/azure/azure-sql/database/transparent-data-encryption-tde-overview?WT.mc_id=DP-MVP-5003548)
 - [Management ports should be closed on your virtual machines](https://docs.microsoft.com/en-us/azure/security-center/recommendations-reference?WT.mc_id=AZ-MVP-5003548)
+-[[MVP] Web Application should only be accessible over HTTPS](https://docs.microsoft.com/fr-fr/azure/app-service/overview-security?WT.mc_id=AZ-MVP-5003548)
 
 ## [MVP] Backup Guidelines
 - [[MVP] Key vaults should have soft delete enabled](https://docs.microsoft.com/en-us/azure/key-vault/general/key-vault-recovery?WT.mc_id=AZ-MVP-5003548)

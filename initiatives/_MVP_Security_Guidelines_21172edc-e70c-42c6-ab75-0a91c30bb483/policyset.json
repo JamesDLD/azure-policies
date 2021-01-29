@@ -211,6 +211,18 @@
                 "policyDefinitionReferenceId": "Management_ports_should_be_closed_on_your_virtual_machines",
                 "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/22730e10-96f6-4aac-ad84-9383d35b5917",
                 "parameters": {}
+            },
+            {
+                "policyDefinitionReferenceId": "_MVP_Web_Application_should_only_be_accessible_over_HTTPS",
+                "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/core/providers/Microsoft.Authorization/policyDefinitions/c63af95c-d9ce-479a-be3d-073656b91685",
+                "parameters": {
+                    "effect": {
+                        "value": "[parameters('effect')]"
+                    },
+                    "identityId": {
+                        "value": "[parameters('identityId')]"
+                    }
+                }
             }
         ]
     }

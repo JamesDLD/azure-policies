@@ -1,0 +1,201 @@
+{
+    "id": "/providers/Microsoft.Management/managementGroups/core/providers/Microsoft.Authorization/policyDefinitions/c63af95c-d9ce-479a-be3d-073656b91685",
+    "type": "Microsoft.Authorization/policyDefinitions",
+    "name": "c63af95c-d9ce-479a-be3d-073656b91685",
+    "properties": {
+        "displayName": "[MVP] Web Application should only be accessible over HTTPS",
+        "policyType": "Custom",
+        "mode": "Indexed",
+        "metadata": {
+            "category": "App Service"
+        },
+        "parameters": {
+            "effect": {
+                "type": "String",
+                "metadata": {
+                    "displayName": "Effect",
+                    "description": "Enable, disable or audit the execution of the policy"
+                },
+                "allowedValues": [
+                    "DeployIfNotExists",
+                    "Disabled",
+                    "AuditIfNotExists"
+                ],
+                "defaultValue": "DeployIfNotExists"
+            },
+            "tagName": {
+                "type": "string",
+                "metadata": {
+                    "displayName": "Exclusion Tag Name",
+                    "description": "Name of the tag to use for excluding vaults from this policy. This should be used along with the Exclusion Tag Value parameter."
+                },
+                "defaultValue": "_MVP_Web_Application_should_only_be_accessible_over_HTTPS"
+            },
+            "tagValue": {
+                "type": "string",
+                "metadata": {
+                    "displayName": "Exclusion Tag Value",
+                    "description": "Value of the tag to use for excluding vaults from this policy. This should be used along with the Exclusion Tag Name parameter."
+                },
+                "defaultValue": "exclude"
+            },
+            "identityId": {
+                "type": "string",
+                "metadata": {
+                    "description": "Specifies the ID of the user-assigned managed identity used for deployment scripts in ARM templates."
+                }
+            }
+        },
+        "policyRule": {
+            "if": {
+                "allOf": [
+                    {
+                        "field": "type",
+                        "equals": "Microsoft.Web/sites"
+                    },
+                    {
+                        "field": "kind",
+                        "like": "app*"
+                    },
+                    {
+                        "not": {
+                            "field": "[concat('tags[',parameters('tagName'), ']')]",
+                            "equals": "[parameters('tagValue')]"
+                        }
+                    }
+                ]
+            },
+            "then": {
+                "effect": "[parameters('effect')]",
+                "details": {
+                    "type": "Microsoft.Web/sites",
+                    "name": "[field('Name')]",
+                    "existenceCondition": {
+                        "field": "Microsoft.Web/sites/httpsOnly",
+                        "equals": "true"
+                    },
+                    "roleDefinitionIds": [
+                        "/providers/microsoft.authorization/roleDefinitions/de139f84-1756-47ae-9be6-808fbbe84772",
+                        "/providers/microsoft.authorization/roleDefinitions/f1a07417-d97a-45cb-824c-7a7467783830"
+                    ],
+                    "deployment": {
+                        "properties": {
+                            "mode": "incremental",
+                            "template": {
+                                "$schema": "http://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                                "contentVersion": "1.0.0.0",
+                                "parameters": {
+                                    "deploymentScriptName": {
+                                        "type": "string",
+                                        "metadata": {
+                                            "description": "Name of the ARM deployment script."
+                                        },
+                                        "defaultValue": "[concat('policy_httpsOnly_',parameters('resourceName'))]"
+                                    },
+                                    "identityId": {
+                                        "type": "string",
+                                        "metadata": {
+                                            "description": "Specifies the ID of the user-assigned managed identity used for deployment scripts in ARM templates."
+                                        }
+                                    },
+                                    "resourceName": {
+                                        "type": "string"
+                                    },
+                                    "tags": {
+                                        "type": "object",
+                                        "defaultValue": {
+                                            "lastTargetResourceName": "[parameters('resourceName')]"
+                                        }
+                                    },
+                                    "utcValue": {
+                                        "type": "string",
+                                        "defaultValue": "[utcNow()]"
+                                    },
+                                    "policyDefinitionReferenceId": {
+                                        "type": "string"
+                                    }
+                                },
+                                "variables": {
+                                    "additional_tags": {
+                                        "lastTargetResourceName": "[parameters('resourceName')]",
+                                        "_MVP_Deploy_Diagnostic_Settings_for_Storage_Accounts_to_Log_Analytics_workspace": "exclude",
+                                        "_MVP_Latest_TLS_version_should_be_used_in_your_Storage_Accounts": "exclude",
+                                        "_MVP_Secure_transfer_to_storage_accounts_should_be_enabled": "exclude",
+                                        "_MVP_Storage_account_public_access_should_be_disallowed": "exclude",
+                                        "_MVP_Storage_Accounts_Blob_should_have_soft_delete_enabled": "exclude"
+                                    }
+                                },
+                                "resources": [
+                                    {
+                                        "type": "Microsoft.Resources/deploymentScripts",
+                                        "apiVersion": "2020-10-01",
+                                        "tags": "[union(variables('additional_tags'),parameters('tags'))]",
+                                        "name": "[parameters('deploymentScriptName')]",
+                                        "location": "[resourceGroup().location]",
+                                        "identity": {
+                                            "type": "UserAssigned",
+                                            "userAssignedIdentities": {
+                                                "[parameters('identityId')]": {}
+                                            }
+                                        },
+                                        "kind": "AzurePowerShell",
+                                        "properties": {
+                                            "forceUpdateTag": "[parameters('utcValue')]",
+                                            "azPowerShellVersion": "5.3",
+                                            "timeout": "PT30M",
+                                            "arguments": "[format(' -Name {0} -ResourceGroupName {1}', parameters('resourceName'), resourceGroup().name )]",
+                                            "scriptContent": "
+                                        param(
+                                        [string] [Parameter(Mandatory = $true)] $Name,
+                                        [string] [Parameter(Mandatory = $true)] $ResourceGroupName
+                                        )
+                                        
+                                        $ErrorActionPreference = 'Stop'
+                                        $DeploymentScriptOutputs = @{}
+          
+                                        $output = 'Setting the HttpsOnly to : true on the App Service : {0} located in the Resource Group : {1}.' -f $Name,$ResourceGroupName
+                                        $DeploymentScriptOutputs['action1'] = $output
+                                        Set-AzWebApp -ResourceGroupName $ResourceGroupName -Name $Name -HttpsOnly $true
+                                        $DeploymentScriptOutputs['end'] = 'End of the operation'
+                                          ",
+                                                "cleanupPreference": "Always",
+                                            "retentionInterval": "PT1H"
+                                        }
+                                    }
+                                ],
+                                "outputs": {
+                                    "action1": {
+                                        "value": "[reference(parameters('deploymentScriptName')).outputs.action1]",
+                                        "type": "string"
+                                    },
+                                    "end": {
+                                        "value": "[reference(parameters('deploymentScriptName')).outputs.end]",
+                                        "type": "string"
+                                    },
+                                    "policyDefinitionReferenceId": {
+                                        "type": "string",
+                                        "value": "[parameters('policyDefinitionReferenceId')]"
+                                    }
+                                }
+                            },
+                            "parameters": {
+                                "identityId": {
+                                    "value": "[parameters('identityId')]"
+                                },
+                                "resourceName": {
+                                    "value": "[field('Name')]"
+                                },
+                                "tags": {
+                                    "value": "[if(empty(field('tags')),createObject('lastTargetResourceName', field('Name')),field('tags'))]"
+                                },
+                                "policyDefinitionReferenceId": {
+                                    "value": "[parameters('tagName')]"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
