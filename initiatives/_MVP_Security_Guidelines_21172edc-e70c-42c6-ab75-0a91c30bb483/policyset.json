@@ -206,6 +206,11 @@
                 "policyDefinitionReferenceId": "Deploy_SQL_DB_transparent_data_encryption",
                 "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/86a912f6-9a06-4e26-b447-11b16ba8659f",
                 "parameters": {}
+            },
+            {
+                "policyDefinitionReferenceId": "Management_ports_should_be_closed_on_your_virtual_machines",
+                "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/22730e10-96f6-4aac-ad84-9383d35b5917",
+                "parameters": {}
             }
         ]
     }

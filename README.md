@@ -42,6 +42,7 @@ You can consult this article [ARM template deployment what-if operation](https:/
 - [[MVP] Deploy Diagnostic Settings for Azure Windows Virtual Desktop](https://medium.com/faun/diagnostic-settings-for-azure-windows-virtual-desktop-resources-part-2-4bfb9ce8d1be)
 - [Deploy Diagnostic Settings for Key Vault to Log Analytics workspace](https://docs.microsoft.com/en-us/azure/azure-monitor/insights/key-vault-insights-overview?WT.mc_id=AZ-MVP-5003548)
 - [[Preview]: Deploy Diagnostic Settings for Recovery Services Vault to Log Analytics workspace for resource specific categories](https://docs.microsoft.com/en-us/azure/backup/configure-reports?WT.mc_id=AZ-MVP-5003548)
+- [[MVP] Deploy Advanced Data Security on SQL servers](https://docs.microsoft.com/fr-fr/azure/azure-sql/database/azure-defender-for-sql?WT.mc_id=DP-MVP-5003548)
 
 ## [MVP] Security Guidelines
 - [Enable Security Center's auto provisioning of the Log Analytics agent on your subscriptions with custom workspace](https://docs.microsoft.com/en-us/azure/security-center/security-center-enable-data-collection?WT.mc_id=AZ-MVP-5003548)
@@ -56,7 +57,7 @@ You can consult this article [ARM template deployment what-if operation](https:/
 - [[MVP] Latest TLS version should be used in your API App](https://azure.microsoft.com/fr-fr/updates/app-service-and-functions-hosted-apps-can-now-update-tls-versions/?WT.mc_id=DOP-MVP-5003548)
 - [[MVP] FTP should be disable in your API App](https://docs.microsoft.com/en-us/azure/app-service/deploy-ftp?WT.mc_id=AZ-MVP-5003548#enforce-ftps)
 - [Deploy SQL DB transparent data encryption](https://docs.microsoft.com/en-us/azure/azure-sql/database/transparent-data-encryption-tde-overview?WT.mc_id=DP-MVP-5003548)
-
+- [Management ports should be closed on your virtual machines](https://docs.microsoft.com/en-us/azure/security-center/recommendations-reference?WT.mc_id=AZ-MVP-5003548)
 
 ## [MVP] Backup Guidelines
 - [[MVP] Key vaults should have soft delete enabled](https://docs.microsoft.com/en-us/azure/key-vault/general/key-vault-recovery?WT.mc_id=AZ-MVP-5003548)
