@@ -1,0 +1,39 @@
+{
+    "effect": {
+        "type": "String",
+        "metadata": {
+            "displayName": "Effect",
+            "description": "Enable, disable or audit the execution of the policy"
+        },
+        "allowedValues": [
+            "DeployIfNotExists",
+            "Disabled",
+            "AuditIfNotExists"
+        ],
+        "defaultValue": "DeployIfNotExists"
+    },
+    "tagName": {
+        "type": "string",
+        "metadata": {
+            "displayName": "Exclusion Tag Name",
+            "description": "Name of the tag to use for excluding vaults from this policy. This should be used along with the Exclusion Tag Value parameter."
+        },
+        "defaultValue": "_MVP_Deploy_Advanced_Data_Security_on_SQL_servers"
+    },
+    "tagValue": {
+        "type": "string",
+        "metadata": {
+            "displayName": "Exclusion Tag Value",
+            "description": "Value of the tag to use for excluding vaults from this policy. This should be used along with the Exclusion Tag Name parameter."
+        },
+        "defaultValue": "exclude"
+    },
+    "storageId": {
+        "type": "String",
+        "metadata": {
+            "displayName": "Storage id",
+            "description": "A string with the storage id for the flowlogs to be sent to. It will be used for deployment purposes only. Make sure this storage account is located in the same region as the NSG. The format must be: '/subscriptions/{subscription id}/resourceGroups/{resourceGroup name}/providers/Microsoft.Storage/storageAccounts/{storage account name}",
+            "assignPermissions": "true"
+        }
+    }
+}

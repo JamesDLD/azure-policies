@@ -242,6 +242,15 @@
                         "value": "westeurope"
                     }
                 }
+            },
+            {
+                "policyDefinitionReferenceId": "_MVP_Deploy_Advanced_Data_Security_on_SQL_servers",
+                "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/core/providers/Microsoft.Authorization/policyDefinitions/28c43c06-eab6-4933-8b36-90212ef7196c",
+                "parameters": {
+                    "storageId": {
+                        "value": "[parameters('storageId')]"
+                    }
+                }
             }
         ]
     }
