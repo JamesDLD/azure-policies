@@ -62,13 +62,35 @@
                         "equals": "Microsoft.Storage/storageAccounts"
                     },
                     {
-                        "field": "Microsoft.Storage/storageAccounts/enableBlobEncryption",
-                        "exists": "true"
-                    },
-                    {
                         "not": {
                             "field": "Microsoft.Storage/storageAccounts/isHnsEnabled",
                             "equals": "true"
+                        }
+                    },
+                    {
+                        "not": {
+                            "allOf": [
+                                {
+                                    "field": "Microsoft.Storage/storageAccounts/primaryEndpoints.web",
+                                    "exists": "false"
+                                },
+                                {
+                                    "field": "Microsoft.Storage/storageAccounts/primaryEndpoints.blob",
+                                    "exists": "false"
+                                },
+                                {
+                                    "field": "Microsoft.Storage/storageAccounts/primaryEndpoints.queue",
+                                    "exists": "false"
+                                },
+                                {
+                                    "field": "Microsoft.Storage/storageAccounts/primaryEndpoints.table",
+                                    "exists": "false"
+                                },
+                                {
+                                    "field": "Microsoft.Storage/storageAccounts/primaryEndpoints.file",
+                                    "equals": "true"
+                                }
+                            ]
                         }
                     },
                     {
