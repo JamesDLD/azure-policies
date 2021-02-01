@@ -57,6 +57,9 @@
                     "effect": {
                         "value": "[parameters('effect')]"
                     },
+                    "blobDeleteRetentionDays": {
+                        "value": "[parameters('blobDeleteRetentionDays')]"
+                    },
                     "identityId": {
                         "value": "[parameters('identityId')]"
                     }
