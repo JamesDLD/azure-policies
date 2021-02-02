@@ -107,7 +107,7 @@
                     "type": "Microsoft.Storage/storageAccounts/blobServices",
                     "name": "[concat(field('name'),'/default')]",
                     "existenceCondition": {
-                        "anyOf": [
+                        "allOf": [
                             {
                                 "field": "Microsoft.Storage/storageAccounts/blobServices/deleteRetentionPolicy.enabled",
                                 "exists": "true"
