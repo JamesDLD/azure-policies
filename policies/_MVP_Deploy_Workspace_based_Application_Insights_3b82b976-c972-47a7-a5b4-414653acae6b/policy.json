@@ -146,7 +146,7 @@
                                     {
                                         "type": "Microsoft.Resources/deploymentScripts",
                                         "apiVersion": "2020-10-01",
-                                        "tags": "[union(variables('additional_tags'),parameters('tags'))]",
+                                        "tags": "[variables('additional_tags')]",
                                         "name": "[parameters('deploymentScriptName')]",
                                         "location": "[resourceGroup().location]",
                                         "identity": {

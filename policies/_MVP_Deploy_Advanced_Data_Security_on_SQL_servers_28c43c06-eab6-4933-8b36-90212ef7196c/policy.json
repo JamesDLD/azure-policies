@@ -69,8 +69,16 @@
                     "type": "Microsoft.Sql/servers/securityAlertPolicies",
                     "name": "Default",
                     "existenceCondition": {
-                        "field": "Microsoft.Sql/securityAlertPolicies.state",
-                        "equals": "Enabled"
+                        "allOf": [
+                            {
+                                "field": "Microsoft.Sql/securityAlertPolicies.state",
+                                "equals": "Enabled"
+                            },
+                            {
+                                "field": "Microsoft.Sql/servers/vulnerabilityAssessments/storageContainerPath",
+                                "contains": "[last(split(parameters('storageId'), '/'))]"
+                            }
+                        ]
                     },
                     "roleDefinitionIds": [
                         "/providers/microsoft.authorization/roleDefinitions/056cd41c-7e88-42e1-933e-88ba6a50c9c3",

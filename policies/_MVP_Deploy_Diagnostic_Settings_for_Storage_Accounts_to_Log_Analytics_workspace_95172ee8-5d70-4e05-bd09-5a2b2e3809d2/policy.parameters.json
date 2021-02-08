@@ -18,7 +18,7 @@
             "displayName": "Exclusion Tag Name",
             "description": "Name of the tag to use for excluding vaults from this policy. This should be used along with the Exclusion Tag Value parameter."
         },
-        "defaultValue": "_MVP_Deploy_Diagnostic_Settings_for_Storage_Accounts_to_Log_Analytics_workspace"
+        "defaultValue": "_MVP_Deploy_Diagnostic_Settings_for_Storage_Accounts_with_a_given_tag_to_Log_Analytics_workspace"
     },
     "tagValue": {
         "type": "string",

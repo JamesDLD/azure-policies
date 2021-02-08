@@ -4,7 +4,7 @@ This script prepare the polcicy to fit with your environment.
 #>
 
 $OldCompanyName = "MVP"
-$NewCompanyName = "DDL"
+$NewCompanyName = "SPACEX"
 $OldManagementGroupId = "/providers/Microsoft.Management/managementGroups/core"
 $NewManagementGroupId = "/providers/Microsoft.Management/managementGroups/xxxxxxxxxxx"
 

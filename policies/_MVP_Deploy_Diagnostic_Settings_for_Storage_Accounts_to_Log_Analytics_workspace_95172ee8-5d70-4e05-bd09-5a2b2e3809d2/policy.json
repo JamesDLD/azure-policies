@@ -3,7 +3,7 @@
     "type": "Microsoft.Authorization/policyDefinitions",
     "name": "95172ee8-5d70-4e05-bd09-5a2b2e3809d2",
     "properties": {
-        "displayName": "[MVP] Deploy Diagnostic Settings for Storage Accounts to Log Analytics workspace",
+        "displayName": "[MVP] Deploy Diagnostic Settings for Storage Accounts with a given tag to Log Analytics workspace",
         "policyType": "Custom",
         "mode": "Indexed",
         "metadata": {
@@ -29,7 +29,7 @@
                     "displayName": "Exclusion Tag Name",
                     "description": "Name of the tag to use for excluding vaults from this policy. This should be used along with the Exclusion Tag Value parameter."
                 },
-                "defaultValue": "_MVP_Deploy_Diagnostic_Settings_for_Storage_Accounts_to_Log_Analytics_workspace"
+                "defaultValue": "_MVP_Deploy_Diagnostic_Settings_for_Storage_Accounts_with_a_given_tag_to_Log_Analytics_workspace"
             },
             "tagValue": {
                 "type": "string",
@@ -89,6 +89,10 @@
                         "equals": "Microsoft.Storage/storageAccounts"
                     },
                     {
+                        "field": "[concat('tags[', parameters('tagName'), ']')]",
+                        "equals": "include"
+                    },
+                    {
                         "not": {
                             "field": "[concat('tags[',parameters('tagName'), ']')]",
                             "equals": "[parameters('tagValue')]"
@@ -103,6 +107,14 @@
                     "name": "[parameters('profileName')]",
                     "existenceCondition": {
                         "allOf": [
+                            {
+                                "field": "Microsoft.Insights/diagnosticSettings/logs[*].enabled",
+                                "equals": "[parameters('logsEnabled')]"
+                            },
+                            {
+                                "field": "Microsoft.Insights/diagnosticSettings/metrics[*].Enabled",
+                                "equals": "[parameters('metricsEnabled')]"
+                            },
                             {
                                 "field": "Microsoft.Insights/diagnosticSettings/workspaceId",
                                 "equals": "[parameters('logAnalytics')]"

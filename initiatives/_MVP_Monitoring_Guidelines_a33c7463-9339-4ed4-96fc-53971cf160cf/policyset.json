@@ -206,7 +206,7 @@
                 }
             },
             {
-                "policyDefinitionReferenceId": "_MVP_Deploy_Diagnostic_Settings_for_Storage_Accounts_to_Log_Analytics_workspace",
+                "policyDefinitionReferenceId": "_MVP_Deploy_Diagnostic_Settings_for_Storage_Accounts_with_a_given_tag_to_Log_Analytics_workspace",
                 "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/core/providers/Microsoft.Authorization/policyDefinitions/95172ee8-5d70-4e05-bd09-5a2b2e3809d2",
                 "parameters": {
                     "effect": {
@@ -217,6 +217,12 @@
                     },
                     "logAnalytics": {
                         "value": "[parameters('logAnalytics')]"
+                    },
+                    "logsEnabled": {
+                        "value": "[parameters('logsEnabled')]"
+                    },
+                    "metricsEnabled": {
+                        "value": "[parameters('metricsEnabled')]"
                     }
                 }
             },
