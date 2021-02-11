@@ -63,6 +63,12 @@
                     },
                     {
                         "not": {
+                            "field": "kind",
+                            "equals": "FileStorage"
+                        }
+                    },
+                    {
+                        "not": {
                             "field": "Microsoft.Storage/storageAccounts/isHnsEnabled",
                             "equals": "true"
                         }
