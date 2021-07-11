@@ -1,3 +1,21 @@
+<#
+.SYNOPSIS
+  Deploy Azure Policies.
+.DESCRIPTION
+  REQUIRED : Internet access & Already connected to an Azure tenant
+  REQUIRED : PowerShell modules, see variables
+.PARAMETER env
+   Mandatory
+   Environment where to deploy Azure Policies
+.NOTES
+   AUTHOR: James Dumont le Douarec
+.LINK
+    https://medium.com/microsoftazure/an-azure-policy-journey-7bb53b41c43d
+    https://github.com/JamesDLD/azure-policies
+.EXAMPLE
+   ./launch.ps1
+#>
+
 ################################################################################
 #                                 Variable
 ################################################################################

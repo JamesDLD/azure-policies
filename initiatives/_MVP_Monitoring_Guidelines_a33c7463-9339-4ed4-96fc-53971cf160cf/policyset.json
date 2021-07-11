@@ -257,6 +257,21 @@
                         "value": "[parameters('storageId')]"
                     }
                 }
+            },
+            {
+                "policyDefinitionReferenceId": "_MVP_Resource_logs_in_Virtual_Machine_Scale_Sets_should_be_enabled",
+                "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/core/providers/Microsoft.Authorization/policyDefinitions/a04a517f-2962-43c7-a8fe-0be124d01f95",
+                "parameters": {
+                    "effect": {
+                        "value": "[parameters('effect')]"
+                    },
+                    "storageId": {
+                        "value": "[parameters('storageId')]"
+                    },
+                    "identityId": {
+                        "value": "[parameters('identityId')]"
+                    }
+                }
             }
         ]
     }

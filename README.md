@@ -43,6 +43,7 @@ You can consult this article [ARM template deployment what-if operation](https:/
 - [Deploy Diagnostic Settings for Key Vault to Log Analytics workspace](https://docs.microsoft.com/en-us/azure/azure-monitor/insights/key-vault-insights-overview?WT.mc_id=AZ-MVP-5003548)
 - [[Preview]: Deploy Diagnostic Settings for Recovery Services Vault to Log Analytics workspace for resource specific categories](https://docs.microsoft.com/en-us/azure/backup/configure-reports?WT.mc_id=AZ-MVP-5003548)
 - [[MVP] Deploy Advanced Data Security on SQL servers](https://docs.microsoft.com/fr-fr/azure/azure-sql/database/azure-defender-for-sql?WT.mc_id=DP-MVP-5003548)
+- [[MVP] Resource logs in Virtual Machine Scale Sets should be enabled](https://docs.microsoft.com/en-us/azure/virtual-machine-scale-sets/policy-reference?WT.mc_id=AZ-MVP-5003548)
 
 ## [MVP] Security Guidelines
 - [Enable Security Center's auto provisioning of the Log Analytics agent on your subscriptions with custom workspace](https://docs.microsoft.com/en-us/azure/security-center/security-center-enable-data-collection?WT.mc_id=AZ-MVP-5003548)

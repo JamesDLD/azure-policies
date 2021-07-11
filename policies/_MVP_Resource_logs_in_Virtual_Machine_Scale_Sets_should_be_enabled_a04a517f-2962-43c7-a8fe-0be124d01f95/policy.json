@@ -1,0 +1,310 @@
+{
+    "id": "/providers/Microsoft.Management/managementGroups/core/providers/Microsoft.Authorization/policyDefinitions/a04a517f-2962-43c7-a8fe-0be124d01f95",
+    "type": "Microsoft.Authorization/policyDefinitions",
+    "name": "a04a517f-2962-43c7-a8fe-0be124d01f95",
+    "properties": {
+        "displayName": "[MVP] Resource logs in Virtual Machine Scale Sets should be enabled",
+        "policyType": "Custom",
+        "mode": "Indexed",
+        "metadata": {
+            "category": "Log Monitor"
+        },
+        "parameters": {
+            "effect": {
+                "type": "String",
+                "metadata": {
+                    "displayName": "Effect",
+                    "description": "Enable, disable or audit the execution of the policy"
+                },
+                "allowedValues": [
+                    "DeployIfNotExists",
+                    "Disabled",
+                    "AuditIfNotExists"
+                ],
+                "defaultValue": "DeployIfNotExists"
+            },
+            "tagName": {
+                "type": "string",
+                "metadata": {
+                    "displayName": "Exclusion Tag Name",
+                    "description": "Name of the tag to use for excluding vaults from this policy. This should be used along with the Exclusion Tag Value parameter."
+                },
+                "defaultValue": "_MVP_Resource_logs_in_Virtual_Machine_Scale_Sets_should_be_enabled"
+            },
+            "tagValue": {
+                "type": "string",
+                "metadata": {
+                    "displayName": "Exclusion Tag Value",
+                    "description": "Value of the tag to use for excluding vaults from this policy. This should be used along with the Exclusion Tag Name parameter."
+                },
+                "defaultValue": "exclude"
+            },
+            "storageId": {
+                "type": "String",
+                "metadata": {
+                    "displayName": "Storage id",
+                    "description": "A string with the storage id to hold diagnostics data. The format must be: '/subscriptions/{subscription id}/resourceGroups/{resourceGroup name}/providers/Microsoft.Storage/storageAccounts/{storage account name}",
+                    "assignPermissions": "true"
+                }
+            },
+            "includeAKSClusters": {
+                "type": "Boolean",
+                "metadata": {
+                    "displayName": "Include AKS Clusters",
+                    "description": "Whether to include AKS Clusters to resource logs extension - True or False"
+                },
+                "defaultValue": true
+            },
+            "identityId": {
+                "type": "string",
+                "metadata": {
+                    "description": "Specifies the ID of the user-assigned managed identity used for deployment scripts in ARM templates."
+                }
+            }
+        },
+        "policyRule": {
+            "if": {
+                "allOf": [
+                    {
+                        "anyOf": [
+                            {
+                                "allOf": [
+                                    {
+                                        "field": "type",
+                                        "equals": "Microsoft.Compute/virtualMachineScaleSets"
+                                    },
+                                    {
+                                        "value": "[parameters('includeAKSClusters')]",
+                                        "equals": true
+                                    }
+                                ]
+                            },
+                            {
+                                "allOf": [
+                                    {
+                                        "field": "type",
+                                        "equals": "Microsoft.Compute/virtualMachineScaleSets"
+                                    },
+                                    {
+                                        "value": "[parameters('includeAKSClusters')]",
+                                        "equals": false
+                                    },
+                                    {
+                                        "field": "Microsoft.Compute/imagePublisher",
+                                        "notEquals": "microsoft-aks"
+                                    },
+                                    {
+                                        "field": "Microsoft.Compute/imageOffer",
+                                        "notEquals": "aks"
+                                    },
+                                    {
+                                        "field": "Microsoft.Compute/imageSKU",
+                                        "notLike": "aks*"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "not": {
+                            "field": "[concat('tags[',parameters('tagName'), ']')]",
+                            "equals": "[parameters('tagValue')]"
+                        }
+                    }
+                ]
+                
+            },
+            "then": {
+                "effect": "[parameters('effect')]",
+                "details": {
+                    "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
+                    "existenceCondition": {
+                        "anyOf": [
+                            {
+                                "allOf": [
+                                    {
+                                        "field": "Microsoft.Compute/virtualMachineScaleSets/extensions/type",
+                                        "equals": "IaaSDiagnostics"
+                                    },
+                                    {
+                                        "field": "Microsoft.Compute/virtualMachineScaleSets/extensions/publisher",
+                                        "equals": "Microsoft.Azure.Diagnostics"
+                                    }
+                                ]
+                            },
+                            {
+                                "allOf": [
+                                    {
+                                        "field": "Microsoft.Compute/virtualMachineScaleSets/extensions/type",
+                                        "equals": "LinuxDiagnostic"
+                                    },
+                                    {
+                                        "field": "Microsoft.Compute/virtualMachineScaleSets/extensions/publisher",
+                                        "in": [
+                                            "Microsoft.OSTCExtensions",
+                                            "Microsoft.Azure.Diagnostics"
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "roleDefinitionIds": [
+                        "/providers/microsoft.authorization/roleDefinitions/17d1049b-9a84-46fb-8f53-869881c3d3ab",
+                        "/providers/microsoft.authorization/roleDefinitions/9980e02c-c2be-4d73-94e8-173b1dc7cf3c"
+                    ],
+                    "deployment": {
+                        "properties": {
+                            "mode": "incremental",
+                            "template": {
+                                "$schema": "http://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                                "contentVersion": "1.0.0.0",
+                                "parameters": {
+                                    "deploymentScriptName": {
+                                        "type": "string",
+                                        "metadata": {
+                                            "description": "Name of the ARM deployment script."
+                                        },
+                                        "defaultValue": "[concat('resource_logs',parameters('resourceName'))]"
+                                    },
+                                    "identityId": {
+                                        "type": "string",
+                                        "metadata": {
+                                            "description": "Specifies the ID of the user-assigned managed identity used for deployment scripts in ARM templates."
+                                        }
+                                    },
+                                    "resourceName": {
+                                        "type": "string"
+                                    },
+                                    "tags": {
+                                        "type": "object",
+                                        "defaultValue": {
+                                            "lastTargetResourceName": "[parameters('resourceName')]"
+                                        }
+                                    },
+                                    "storageId": {
+                                        "type": "string",
+                                        "metadata": {
+                                            "description": "A string with the storage id to hold diagnostics data. The format must be: '/subscriptions/{subscription id}/resourceGroups/{resourceGroup name}/providers/Microsoft.Storage/storageAccounts/{storage account name}"
+                                        }
+                                    },
+                                    "utcValue": {
+                                        "type": "string",
+                                        "defaultValue": "[utcNow()]"
+                                    },
+                                    "baseTime": {
+                                        "type": "string",
+                                        "defaultValue": "[utcNow('u')]"
+                                    },
+                                    "policyDefinitionReferenceId": {
+                                        "type": "string"
+                                    }
+                                },
+                                "variables": {
+                                    "add2Years": "[dateTimeAdd(parameters('baseTime'), 'P2Y')]",
+                                    "additional_tags": {
+                                        "lastTargetResourceName": "[parameters('resourceName')]",
+                                        "_MVP_Deploy_Diagnostic_Settings_for_Storage_Accounts_to_Log_Analytics_workspace": "exclude",
+                                        "_MVP_Latest_TLS_version_should_be_used_in_your_Storage_Accounts": "exclude",
+                                        "_MVP_Secure_transfer_to_storage_accounts_should_be_enabled": "exclude",
+                                        "_MVP_Storage_account_public_access_should_be_disallowed": "exclude",
+                                        "_MVP_Storage_Accounts_Blob_should_have_soft_delete_enabled": "exclude"
+                                    }
+                                },
+                                "resources": [
+                                    {
+                                        "type": "Microsoft.Resources/deploymentScripts",
+                                        "apiVersion": "2020-10-01",
+                                        "tags": "[union(variables('additional_tags'),parameters('tags'))]",
+                                        "name": "[parameters('deploymentScriptName')]",
+                                        "location": "[resourceGroup().location]",
+                                        "identity": {
+                                            "type": "UserAssigned",
+                                            "userAssignedIdentities": {
+                                                "[parameters('identityId')]": {}
+                                            }
+                                        },
+                                        "kind": "AzureCLI",
+                                        "properties": {
+                                            "forceUpdateTag": "[parameters('utcValue')]",
+                                            "AzCliVersion": "2.25.0",
+                                            "timeout": "PT30M",
+                                            "arguments": "[format('{0} {1} {2} {3}', parameters('resourceName'), resourceGroup().name, parameters('storageId'), variables('add2Years'))]",
+                                            "scriptContent": "
+# Variable
+echo START
+before=$(az vmss show --name $1 --resource-group $2 -o json)
+osType=$(az vmss show --name $1 --resource-group $2 --query virtualMachineProfile.storageProfile.osDisk.osType -o tsv)
+
+if [ \"$osType\" = \"Linux\" ]; then
+    echo \"Getting diagnostic configuration for Linux ...\"
+    az vmss diagnostics get-default-config > config.json
+elif [ \"$osType\" = \"Windows\" ]; then
+    echo \"Getting diagnostic configuration for Linux ...\"
+    az vmss diagnostics get-default-config --is-windows-os > config.json
+else
+    exit 1
+fi
+
+saname=$(az storage account show --ids $3 --query name -o tsv)
+echo \"Preparing the config.json file to point to the SA [ ${saname} ] ...\"
+vmsssId=$(az vmss show --name $1 --resource-group $2 --query id -o tsv)
+sed -i \"s/__DIAGNOSTIC_STORAGE_ACCOUNT__/$saname/g\" ./config.json
+sed -i \"s/__VM_OR_VMSS_RESOURCE_ID__/$vmsssId/g\" ./config.json
+echo \"Getting Access Key of SA [ ${saname} ] ...\"
+saKey=$(az storage account keys list --account-name $saname --query \"[?keyName=='key1'].value\" -o tsv)
+end=$4
+echo \"Getting SAS Token Key for SA [ ${saname} ] with the end date [ ${end} ] ...\"
+saSasToken=$(az storage account generate-sas --account-key $saKey --account-name $saname --permissions cdlruwap --services bfqt --resource-types sco --expiry $end -o tsv)
+protected_settings='{\"storageAccountName\":\"'\"$saname\"'\",\"storageAccountSasToken\":\"'\"$saSasToken\"'\"}'
+echo $protected_settings > protected_settings.json
+
+# Action
+echo \"Enabling resource log on VM Scale Set [ ${1} ] located in Resource Group [ ${2} ] ...\"
+result=$(az vmss diagnostics set --protected-settings protected_settings.json --vmss-name $1 --resource-group $2 --settings config.json)
+
+# Log
+after=$(az vmss show --name $1 --resource-group $2 -o json);
+echo \"{ \"before_after\": [ ${before},${after},${result} ] }\" > $AZ_SCRIPTS_OUTPUT_PATH;
+echo END
+                                            ",
+                                            "cleanupPreference": "Always",
+                                            "retentionInterval": "PT1H"
+                                        }
+                                    }
+                                ],
+                                "outputs": {
+                                    "result": {
+                                        "value": "[reference(parameters('deploymentScriptName')).outputs]",
+                                        "type": "object"
+                                    },
+                                    "policyDefinitionReferenceId": {
+                                        "type": "string",
+                                        "value": "[parameters('policyDefinitionReferenceId')]"
+                                    }
+                                }
+                            },
+                            "parameters": {
+                                "identityId": {
+                                    "value": "[parameters('identityId')]"
+                                },
+                                "resourceName": {
+                                    "value": "[field('Name')]"
+                                },
+                                "tags": {
+                                    "value": "[if(empty(field('tags')),createObject('lastTargetResourceName', field('Name')),field('tags'))]"
+                                },
+                                "storageId": {
+                                    "value": "[parameters('storageId')]"
+                                },
+                                "policyDefinitionReferenceId": {
+                                    "value": "[parameters('tagName')]"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

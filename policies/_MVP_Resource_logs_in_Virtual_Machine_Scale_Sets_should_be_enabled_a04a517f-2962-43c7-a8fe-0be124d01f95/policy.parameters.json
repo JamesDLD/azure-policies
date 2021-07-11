@@ -1,0 +1,53 @@
+{
+    "effect": {
+        "type": "String",
+        "metadata": {
+            "displayName": "Effect",
+            "description": "Enable, disable or audit the execution of the policy"
+        },
+        "allowedValues": [
+            "DeployIfNotExists",
+            "Disabled",
+            "AuditIfNotExists"
+        ],
+        "defaultValue": "DeployIfNotExists"
+    },
+    "tagName": {
+        "type": "string",
+        "metadata": {
+            "displayName": "Exclusion Tag Name",
+            "description": "Name of the tag to use for excluding vaults from this policy. This should be used along with the Exclusion Tag Value parameter."
+        },
+        "defaultValue": "_MVP_Resource_logs_in_Virtual_Machine_Scale_Sets_should_be_enabled"
+    },
+    "tagValue": {
+        "type": "string",
+        "metadata": {
+            "displayName": "Exclusion Tag Value",
+            "description": "Value of the tag to use for excluding vaults from this policy. This should be used along with the Exclusion Tag Name parameter."
+        },
+        "defaultValue": "exclude"
+    },
+    "storageId": {
+        "type": "String",
+        "metadata": {
+            "displayName": "Storage id",
+            "description": "A string with the storage id to hold diagnostics data. The format must be: '/subscriptions/{subscription id}/resourceGroups/{resourceGroup name}/providers/Microsoft.Storage/storageAccounts/{storage account name}",
+            "assignPermissions": "true"
+        }
+    },
+    "includeAKSClusters": {
+        "type": "Boolean",
+        "metadata": {
+            "displayName": "Include AKS Clusters",
+            "description": "Whether to include AKS Clusters to resource logs extension - True or False"
+        },
+        "defaultValue": true
+    },
+    "identityId": {
+        "type": "string",
+        "metadata": {
+            "description": "Specifies the ID of the user-assigned managed identity used for deployment scripts in ARM templates."
+        }
+    }
+}
