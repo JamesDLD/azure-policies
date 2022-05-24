@@ -73,6 +73,15 @@
                         "value": "AuditIfNotExists"
                     }
                 }
+            },
+            {
+                "policyDefinitionReferenceId": "_MVP_Resource_Lock_should_be_enabled",
+                "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/core/providers/Microsoft.Authorization/policyDefinitions/d1ad6c00-a48d-4039-87a9-8662253c303f",
+                "parameters": {
+                    "effect": {
+                        "value": "[parameters('effect')]"
+                    }
+                }
             }
         ]
     }

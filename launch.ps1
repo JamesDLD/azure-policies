@@ -26,16 +26,20 @@ $AzRoleDefinitions = @()
 $Scopes = @()
 $PowerShellModules = @(
   @{ 
+    Name           = "Az.ManagedServiceIdentity"
+    MinimumVersion = "0.7.3"
+  },
+  @{ 
     Name           = "Az.Accounts"
-    MinimumVersion = "2.2.3"
+    MinimumVersion = "2.7.0"
   },
   @{ 
     Name           = "Az.Resources"
-    MinimumVersion = "2.4.0"
+    MinimumVersion = "5.1.0"
   }
   @{ 
     Name           = "Az.PolicyInsights"
-    MinimumVersion = "1.3.1"
+    MinimumVersion = "1.4.1"
   }
 )
 
@@ -56,6 +60,9 @@ ForEach ($PowerShellModule in $PowerShellModules) {
 ################################################################################
 #                                 Action
 ################################################################################
+# $SubscriptionId = "<Your Subscription Id>"
+# Select-AzSubscription -SubscriptionId $SubscriptionId -ErrorAction Stop
+
 ## Create or ensure that the needed custom roles exist
 foreach ($item in Get-Item .\roles\*.json) {
   $roles = (Get-Content -Path $item.FullName) | ConvertFrom-Json
@@ -143,19 +150,21 @@ foreach ($item in Get-Item .\initiatives\*\policy.parameters.json) {
 
     $AzRoleAssignment = Get-AzRoleAssignment -Scope "$($assign.properties.scope)" -ObjectId $objectID -RoleDefinitionId $deploymentScriptMinimumPrivilege.Id -ErrorAction SilentlyContinue
     if (!$AzRoleAssignment) {
-      New-AzRoleAssignment -Scope "$($assign.properties.scope)" -ObjectId $objectID -RoleDefinitionId $deploymentScriptMinimumPrivilege.Id
+      New-AzRoleAssignment -Scope "$($assign.properties.scope)" -ObjectId $objectID.Guid -RoleDefinitionId $deploymentScriptMinimumPrivilege.Id
     }
 
     foreach ($roleDefinitionId in $roleDefinitionIds) {
       
       $AzRoleAssignment = Get-AzRoleAssignment -Scope "$($assign.properties.scope)" -ObjectId $objectID -RoleDefinitionId "$($roleDefinitionId.Split("/")[-1])" -ErrorVariable notPresent -ErrorAction SilentlyContinue
       if (!$AzRoleAssignment) {
-        New-AzRoleAssignment -Scope "$($assign.properties.scope)" -ObjectId $objectID -RoleDefinitionId "$($roleDefinitionId.Split("/")[-1])"
+        New-AzRoleAssignment -Scope "$($assign.properties.scope)" -ObjectId $objectID.Guid -RoleDefinitionId "$($roleDefinitionId.Split("/")[-1])"
       }
     }
 
     ## User Managed Identity used for the deployment script on ARM Template (used for remediation)
     if ($assign.properties.parameters | Get-Member | Where-Object { $_.Name -like "identityId" } ) {
+      $AzureRmContext = Get-AzSubscription -SubscriptionId $assign.properties.parameters.identityId.value.split("/")[2] | Set-AzContext -ErrorAction Stop
+      Select-AzSubscription -Name $AzureRmContext.Subscription.Name -Context $AzureRmContext -Force -ErrorAction Stop | Out-Null
       $AzUserAssignedIdentity = Get-AzUserAssignedIdentity -ResourceGroupName $assign.properties.parameters.identityId.value.split("/")[-5] -Name $assign.properties.parameters.identityId.value.split("/")[-1]
 
       $AzRoleAssignment = Get-AzRoleAssignment -Scope "$($assign.properties.scope)" -ObjectId $AzUserAssignedIdentity.PrincipalId -RoleDefinitionId $deploymentScriptMinimumPrivilege.Id -ErrorAction SilentlyContinue
