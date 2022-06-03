@@ -44,14 +44,12 @@
             "if": {
                 "allOf": [
                     {
-                        "field": "[concat('tags[','LockLevel', ']')]",
+                        "field": "tags.LockLevel",
                         "equals": "CanNotDelete"
                     },
                     {
-                        "not": {
-                            "field": "type",
-                            "equals": "Microsoft.Resources/subscriptions/resourceGroups"
-                        }
+                        "value": "[length(split(field('type'),'/'))]",
+                        "equals" : 2
                     },
                     {
                         "not": {
@@ -69,6 +67,18 @@
                     ],
                     "type": "Microsoft.Authorization/locks",
                     "name": "ResourceLockedByPolicy",
+                    "existenceCondition": {
+                        "allOf": [
+                            {
+                                "field": "Microsoft.Authorization/locks/level",
+                                "In": ["CanNotDelete"]
+                            },
+                            {
+                                "field": "Microsoft.Authorization/locks/notes",
+                                "equals": "Locked by Azure Policy"
+                            }
+                        ]
+                    },
                     "deployment": {
                         "properties": {
                             "mode": "incremental",
