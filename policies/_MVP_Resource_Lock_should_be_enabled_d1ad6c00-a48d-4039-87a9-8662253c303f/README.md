@@ -3,9 +3,9 @@
 # Content
 With this policy: any resource that has the tag key *LockLevel* with the value *CanNotDelete* means authorized users can read and modify the resource, but they can’t delete it.
 
-Before implementing Azure Locks make sure you have read the following documentation [Considerations before applying your locks](https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/lock-resources?tabs=json&WT.mc_id=AZ-MVP-5003548#considerations-before-applying-your-locks).
+Before implementing Azure Locks, make sure you have read the following documentation [Considerations before applying your locks](https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/lock-resources?tabs=json&WT.mc_id=AZ-MVP-5003548#considerations-before-applying-your-locks).
 
-Published in the Blog post [Compliance and delegation of Azure Locks through Azure Policy](https://medium.com/microsoftazure/compliance-and-delegation-of-azure-locks-through-azure-policy-9f464d40faee).
+All details, including a demo are available in the following blog post [Compliance and delegation of Azure Locks through Azure Policy](https://faun.pub/compliance-and-delegation-of-azure-locks-through-azure-policy-9f464d40faee).
 
 
 # Disclaimer
